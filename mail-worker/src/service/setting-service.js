@@ -1,7 +1,7 @@
 import KvConst from '../const/kv-const';
 import setting from '../entity/setting';
 import orm from '../entity/orm';
-import { settingConst } from '../const/entity-const';
+import { settingConst, verifyRecordType } from '../const/entity-const';
 import fileUtils from '../utils/file-utils';
 import r2Service from './r2-service';
 import emailService from './email-service';
@@ -10,6 +10,7 @@ import userService from './user-service';
 import constant from '../const/constant';
 import BizError from '../error/biz-error';
 import { t } from '../i18n/i18n'
+import verifyRecordService from './verify-record-service';
 
 const settingService = {
 
@@ -31,11 +32,32 @@ const settingService = {
 	},
 
 	async get(c) {
-		const settingRow = await this.query(c);
+
+		const [settingRow, recordList] = await Promise.all([
+			await this.query(c),
+			verifyRecordService.selectListByIP(c)
+		]);
+
 		settingRow.secretKey = settingRow.secretKey ? `${settingRow.secretKey.slice(0, 12)}******` : null;
 		Object.keys(settingRow.resendTokens).forEach(key => {
 			settingRow.resendTokens[key] = `${settingRow.resendTokens[key].slice(0, 12)}******`;
 		});
+
+		let regVerifyOpen = false
+		let addVerifyOpen = false
+
+		recordList.forEach(row => {
+			if (row.type === verifyRecordType.REG) {
+				regVerifyOpen = row.count >= settingRow.regVerifyCount
+			}
+			if (row.type === verifyRecordType.ADD) {
+				addVerifyOpen = row.count >= settingRow.addVerifyCount
+			}
+		})
+
+		settingRow.regVerifyOpen = regVerifyOpen
+		settingRow.addVerifyOpen = addVerifyOpen
+
 		return settingRow;
 	},
 
@@ -50,28 +72,13 @@ const settingService = {
 		await this.refresh(c);
 	},
 
-	async isAddEmail(c) {
-		const { addEmail, manyEmail } = await this.query(c);
-		return addEmail === settingConst.addEmail.OPEN && manyEmail === settingConst.manyEmail.OPEN;
-	},
-
-	async isRegisterVerify(c) {
-		const { registerVerify } = await this.query(c);
-		return registerVerify === settingConst.registerVerify.OPEN;
-	},
-
-	async isAddEmailVerify(c) {
-		const { addEmailVerify } = await this.query(c);
-		return addEmailVerify === settingConst.addEmailVerify.OPEN;
-	},
-
 	async setBackground(c, params) {
 
 		const settingRow = await this.query(c);
 
 		let { background } = params
 
-		if (!background.startsWith('http')) {
+		if (background && !background.startsWith('http')) {
 
 			if (!c.env.r2) {
 				throw new BizError(t('noOsUpBack'));
@@ -113,7 +120,9 @@ const settingService = {
 	},
 
 	async websiteConfig(c) {
-		const settingRow = await this.get(c);
+
+		const settingRow = await this.get(c)
+
 		return {
 			register: settingRow.register,
 			title: settingRow.title,
@@ -128,7 +137,9 @@ const settingService = {
 			background: settingRow.background,
 			loginOpacity: settingRow.loginOpacity,
 			domainList:settingRow.domainList,
-			regKey: settingRow.regKey
+			regKey: settingRow.regKey,
+			regVerifyOpen: settingRow.regVerifyOpen,
+			addVerifyOpen: settingRow.addVerifyOpen
 		};
 	}
 };

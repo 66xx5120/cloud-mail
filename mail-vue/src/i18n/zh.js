@@ -255,6 +255,10 @@ const zh = {
     backgroundUrlDesc: '在线图片链接',
     localUpload: '本地上传',
     imageLink: '图片链接',
+    imageLinkErrorMsg: '图片链接不正确',
     backgroundWarning: '图片文件大小会影响网站加载速度',
+    rulesVerify: '规则',
+    rulesVerifyTitle: 'IP 每天使用 {count} 次后触发',
+    botVerifyMsg: '请完成人机验证',
 }
 export default zh

@@ -13,11 +13,12 @@
           <span class="form-title">{{settingStore.settings.title}}</span>
           <span class="form-desc" v-if="show === 'login'">{{$t('loginTitle')}}</span>
           <span class="form-desc" v-else>{{$t('regTitle')}}</span>
-          <div v-if="show === 'login'">
+          <div v-show="show === 'login'">
             <el-input class="email-input" v-model="form.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
               <template #append>
                 <div @click.stop="openSelect">
                   <el-select
+                      v-if="show === 'login'"
                       ref="mySelect"
                       v-model="suffix"
                       :placeholder="$t('select')"
@@ -43,11 +44,12 @@
             >{{$t('loginBtn')}}
             </el-button>
           </div>
-          <div v-else>
+          <div v-show="show !== 'login'">
             <el-input class="email-input" v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
               <template #append>
                 <div @click.stop="openSelect">
                   <el-select
+                      v-if="show !== 'login'"
                       ref="mySelect"
                       v-model="suffix"
                       :placeholder="$t('select')"
@@ -75,7 +77,12 @@
                 class="register-turnstile"
                 :data-sitekey="settingStore.settings.siteKey"
                 data-callback="onTurnstileSuccess"
-            ></div>
+                data-error-callback="onTurnstileError"
+                data-after-interactive-callback="loadAfter"
+                data-before-interactive-callback="loadBefore"
+            >
+              <span style="font-size: 12px;color: #F56C6C" v-if="botJsError">人机验证模块加载失败,请刷新浏览器</span>
+            </div>
             <el-button class="btn" type="primary" @click="submitRegister" :loading="registerLoading"
             >{{$t('regBtn')}}
             </el-button>
@@ -129,15 +136,30 @@ suffix.value = domainList[0]
 const verifyShow = ref(false)
 let verifyToken = ''
 let turnstileId = null
-
+let botJsError = ref(false)
 
 window.onTurnstileSuccess = (token) => {
   verifyToken = token;
-  setTimeout(() => {
-    verifyShow.value = false
-  }, 2000)
 };
 
+window.onTurnstileError = (e) => {
+  console.log('人机验加载失败')
+  nextTick(() => {
+    if (!turnstileId) {
+      turnstileId = window.turnstile.render('.register-turnstile')
+    } else {
+      window.turnstile.reset(turnstileId);
+    }
+  })
+};
+
+window.loadAfter = (e) => {
+  console.log('loadAfter')
+}
+
+window.loadBefore = (e) => {
+  console.log('loadBefore')
+}
 
 const loginOpacity = computed(() => {
   return `rgba(255, 255, 255, ${settingStore.settings.loginOpacity})`
@@ -157,7 +179,6 @@ const background = computed(() => {
 const openSelect = () => {
   mySelect.value.toggleMenu()
 }
-
 
 const submit = () => {
 
@@ -267,15 +288,26 @@ function submitRegister() {
 
   }
 
-  if (!verifyToken && settingStore.settings.registerVerify === 0) {
-    verifyShow.value = true
-    if (!turnstileId) {
+  if (!verifyToken && (settingStore.settings.registerVerify === 0 || (settingStore.settings.registerVerify === 2 && settingStore.settings.regVerifyOpen))) {
+    if (!verifyShow.value) {
+      verifyShow.value = true
       nextTick(() => {
-        turnstileId = window.turnstile.render('.register-turnstile')
+        if (!turnstileId) {
+          try {
+            turnstileId = window.turnstile.render('.register-turnstile')
+          } catch (e) {
+            botJsError.value = true
+            console.log('人机验证js加载失败')
+          }
+        } else {
+          window.turnstile.reset('.register-turnstile')
+        }
       })
-    } else {
-      nextTick(() => {
-        window.turnstile.reset(turnstileId);
+    } else if (!botJsError.value) {
+      ElMessage({
+        message: t('botVerifyMsg'),
+        type: "error",
+        plain: true
       })
     }
     return;
@@ -290,27 +322,38 @@ function submitRegister() {
     code: registerForm.code
   }
 
-  register(form).then(() => {
+  register(form).then(({regVerifyOpen}) => {
     show.value = 'login'
     registerForm.email = ''
     registerForm.password = ''
     registerForm.confirmPassword = ''
     registerForm.code = ''
     registerLoading.value = false
-    turnstileId = null
     verifyToken = ''
+    settingStore.settings.regVerifyOpen = regVerifyOpen
+    verifyShow.value = false
     ElMessage({
       message: t('regSuccessMsg'),
       type: 'success',
       plain: true,
     })
   }).catch(res => {
+
+    registerLoading.value = false
+
     if (res.code === 400) {
       verifyToken = ''
-      window.turnstile.reset(turnstileId)
+      settingStore.settings.regVerifyOpen = true
+      if (turnstileId) {
+        window.turnstile.reset(turnstileId)
+      } else {
+        nextTick(() => {
+          turnstileId = window.turnstile.render('.register-turnstile')
+        })
+      }
       verifyShow.value = true
+
     }
-    registerLoading.value = false
   });
 }
 

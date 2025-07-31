@@ -230,15 +230,39 @@
               <div class="setting-item">
                 <div><span>{{$t('signUpVerification')}}</span></div>
                 <div>
-                  <el-switch @change="change" :before-change="beforeChange" :active-value="0" :inactive-value="1"
-                             v-model="setting.registerVerify"/>
+                  <el-button class="opt-button" size="small" type="primary" @click="openRegVerifyCount">
+                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                  </el-button>
+                  <el-select
+                      @change="change"
+                      :style="`width: ${ locale === 'en' ? 100 : 80 }px;`"
+                      v-model="setting.registerVerify"
+                      placeholder="Select"
+                      class="bot-verify-select"
+                  >
+                    <el-option key="1" :value="0" :label="$t('enable')" />
+                    <el-option key="1" :value="1" :label="$t('disable')" />
+                    <el-option key="1" :value="2" :label="$t('rulesVerify')" />
+                  </el-select>
                 </div>
               </div>
               <div class="setting-item">
                 <div><span>{{$t('addEmailVerification')}}</span></div>
                 <div>
-                  <el-switch @change="change" :before-change="beforeChange" :active-value="0" :inactive-value="1"
-                             v-model="setting.addEmailVerify"/>
+                  <el-button class="opt-button" size="small" type="primary" @click="openAddVerifyCount">
+                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                  </el-button>
+                  <el-select
+                      @change="change"
+                      :style="`width: ${ locale === 'en' ? 100 : 80 }px;`"
+                      v-model="setting.addEmailVerify"
+                      placeholder="Select"
+                      class="bot-verify-select"
+                  >
+                    <el-option key="1" :value="0" :label="$t('enable')" />
+                    <el-option key="1" :value="1" :label="$t('disable')" />
+                    <el-option key="1" :value="2" :label="$t('rulesVerify')" />
+                  </el-select>
                 </div>
               </div>
               <div class="setting-item">
@@ -450,6 +474,19 @@
           <el-table-column :width="tokenColumnWidth" property="value" label="Token" fixed="right" :show-overflow-tooltip="true" />
         </el-table>
       </el-dialog>
+      <el-dialog v-model="showRegVerifyCount" :title="$t('rulesVerifyTitle',{count: regVerifyCount})"  @closed="regVerifyCount = setting.regVerifyCount" >
+        <form>
+          <el-input-number type="text" v-model="regVerifyCount" :min="1" >
+          </el-input-number>
+          <el-button type="primary" :loading="settingLoading" @click="saveRegVerifyCount">{{$t('save')}}</el-button>
+        </form>
+      </el-dialog>
+      <el-dialog v-model="showAddVerifyCount" :title="$t('rulesVerifyTitle',{count: addVerifyCount})" @closed="addVerifyCount = setting.addVerifyCount">
+        <form>
+          <el-input-number type="text" v-model="addVerifyCount" :min="1"/>
+          <el-button type="primary" :loading="settingLoading" @click="saveAddVerifyCount">{{$t('save')}}</el-button>
+        </form>
+      </el-dialog>
     </el-scrollbar>
   </div>
 </template>
@@ -497,7 +534,11 @@ const loginOpacity = ref(0)
 const backgroundUrl = ref('')
 let backgroundFile = {}
 const showSetBackground = ref(false)
+let regVerifyCount = ref(1)
+let addVerifyCount = ref(1)
 let backup = '{}'
+const showAddVerifyCount = ref(false)
+const showRegVerifyCount = ref(false)
 const resendTokenForm = reactive({
   domain: '',
   token: '',
@@ -542,7 +583,19 @@ settingQuery().then(settingData => {
   backgroundUrl.value = setting.value.background?.startsWith('http') ? setting.value.background : ''
   editTitle.value = setting.value.title
   r2DomainInput.value = setting.value.r2Domain
+  addVerifyCount.value = setting.value.addVerifyCount
+  regVerifyCount.value = setting.value.regVerifyCount
 })
+
+function openAddVerifyCount() {
+  if (settingLoading.value) return
+  showAddVerifyCount.value = true
+}
+
+function openRegVerifyCount() {
+  if (settingLoading.value) return
+  showRegVerifyCount.value = true
+}
 
 const resendList = computed(() => {
 
@@ -565,6 +618,20 @@ const resendList = computed(() => {
 
   return list;
 });
+
+function saveAddVerifyCount() {
+  if(!addVerifyCount.value) {
+    addVerifyCount.value = 1
+  }
+  editSetting({addVerifyCount: addVerifyCount.value})
+}
+
+function saveRegVerifyCount() {
+  if (!regVerifyCount.value) {
+    regVerifyCount.value = 1
+  }
+  editSetting({regVerifyCount: regVerifyCount.value})
+}
 
 const compareByLengthAndUpperCase = (a, b, key) => {
   const getUpperCaseCount = (str) => (str.match(/[A-Z]/g) || []).length;
@@ -742,9 +809,9 @@ async function saveBackground() {
   if (localUpShow.value) {
     image =  await fileToBase64(backgroundFile,true);
   } else {
-    if (!backgroundUrl.value.startsWith('http')) {
+    if (backgroundUrl.value && !backgroundUrl.value.startsWith('http')) {
       ElMessage({
-        message: '图片地址不正确',
+        message: t('imageLinkErrorMsg'),
         type: "error",
         plain: true
       })
@@ -872,8 +939,9 @@ function editSetting(settingForm, refreshStatus = true) {
     tgSettingShow.value = false
     thirdEmailShow.value = false
     forwardRulesShow.value = false
+    showAddVerifyCount.value = false
+    showRegVerifyCount.value = false
   }).catch((e) => {
-    console.error(e)
     loginOpacity.value = setting.value.loginOpacity
     setting.value = {...setting.value, ...JSON.parse(backup)}
   }).finally(() => {
@@ -941,7 +1009,9 @@ function editSetting(settingForm, refreshStatus = true) {
   flex-direction: column;
 }
 
-
+.bot-verify-select {
+  margin-left: 10px;
+}
 
 .settings-card {
   background-color: #fff;

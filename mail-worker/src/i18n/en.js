@@ -48,7 +48,7 @@ const en = {
 	noOsUpBack: 'Cannot upload background: R2 object storage not configured',
 	noOsDomainUpBack: 'Cannot upload background: R2 domain not configured',
 	starNotExistEmail: 'Starred email does not exist',
-	emptyBotToken: 'Verification token cannot be empty',
+	emptyBotToken: 'Please verify that you are human',
 	botVerifyFail: 'Bot verification failed, please try again',
 	authExpired: 'Authentication has expired. Please sign in again',
 	unauthorized: 'Unauthorized',

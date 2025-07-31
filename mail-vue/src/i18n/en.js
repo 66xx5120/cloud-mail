@@ -255,7 +255,11 @@ const en = {
     backgroundUrlDesc: 'Image URL',
     localUpload: ' Local upload',
     imageLink: 'Image URL',
-    backgroundWarning: 'Image file size affects website load speed.'
+    imageLinkErrorMsg: 'Invalid image URL',
+    backgroundWarning: 'Image file size affects website load speed.',
+    rulesVerify: 'Rules',
+    rulesVerifyTitle: 'Trigger After {count} Daily Uses per IP',
+    botVerifyMsg: 'Please verify that you are human',
 }
 
 export default en

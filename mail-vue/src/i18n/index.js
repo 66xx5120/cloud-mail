@@ -4,8 +4,8 @@ import zh from './zh.js'
 const i18n = createI18n({
     legacy: false,
     messages: {
-        en,
-        zh
+        zh,
+        en
     },
 });
 

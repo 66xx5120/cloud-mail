@@ -18,6 +18,7 @@ import regKeyService from './reg-key-service';
 import dayjs from 'dayjs';
 import { toUtc } from '../utils/date-uitil';
 import { t } from '../i18n/i18n.js';
+import verifyRecordService from './verify-record-service';
 
 const loginService = {
 
@@ -25,11 +26,8 @@ const loginService = {
 
 		const { email, password, token, code } = params;
 
-		const {regKey, register, registerVerify} = await settingService.query(c)
+		const {regKey, register, registerVerify, regVerifyCount} = await settingService.query(c)
 
-		if (registerVerify === settingConst.registerVerify.OPEN) {
-			await turnstileService.verify(c,token)
-		}
 
 		if (register === settingConst.register.CLOSE) {
 			throw new BizError(t('regDisabled'));
@@ -80,7 +78,6 @@ const loginService = {
 			throw new BizError(t('isRegAccount'));
 		}
 
-		const { salt, hash } = await saltHashUtils.hashPassword(password);
 
 		let defType = null
 
@@ -104,6 +101,22 @@ const loginService = {
 
 		}
 
+		let regVerifyOpen = false
+
+		if (registerVerify === settingConst.registerVerify.OPEN) {
+			regVerifyOpen = true
+			await turnstileService.verify(c,token)
+		}
+
+		if (registerVerify === settingConst.registerVerify.COUNT) {
+			regVerifyOpen = await verifyRecordService.isOpenRegVerify(c, regVerifyCount);
+			if (regVerifyOpen) {
+				await turnstileService.verify(c,token)
+			}
+		}
+
+		const { salt, hash } = await saltHashUtils.hashPassword(password);
+
 		const userId = await userService.insert(c, { email, regKeyId,password: hash, salt, type: type || defType });
 
 		await userService.updateUserInfo(c, userId, true);
@@ -113,6 +126,13 @@ const loginService = {
 		if (regKey !== settingConst.regKey.CLOSE && type) {
 			await regKeyService.reduceCount(c, code, 1);
 		}
+
+		if (registerVerify === settingConst.registerVerify.COUNT && !regVerifyOpen) {
+			const row = await verifyRecordService.increaseRegCount(c);
+			return {regVerifyOpen: row.count >= regVerifyCount}
+		}
+
+		return {regVerifyOpen}
 
 	},
 

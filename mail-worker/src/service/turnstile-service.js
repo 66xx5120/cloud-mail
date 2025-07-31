@@ -7,7 +7,7 @@ const turnstileService = {
 	async verify(c, token) {
 
 		if (!token) {
-			throw new BizError(t('emptyBotToken'));
+			throw new BizError(t('emptyBotToken'),400);
 		}
 
 		const settingRow = await settingService.query(c)

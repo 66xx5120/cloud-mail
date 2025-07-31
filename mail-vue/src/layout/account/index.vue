@@ -103,7 +103,10 @@
           :class="verifyShow ? 'turnstile-show' : 'turnstile-hide'"
           :data-sitekey="settingStore.settings.siteKey"
           data-callback="onTurnstileSuccess"
-      ></div>
+          data-error-callback="onTurnstileError"
+      >
+        <span style="font-size: 12px;color: #F56C6C" v-if="botJsError">人机验证模块加载失败,请刷新浏览器</span>
+      </div>
     </el-dialog>
     <el-dialog v-model="setNameShow" :title="$t('changeUserName')" >
       <div class="container">
@@ -145,6 +148,7 @@ const accountName = ref(null)
 const addRef = ref({})
 let account = null
 let turnstileId = null
+const botJsError = ref(false)
 let verifyToken = ''
 const addForm = reactive({
   email: '',
@@ -170,11 +174,19 @@ const openSelect = () => {
   mySelect.value.toggleMenu()
 }
 
+window.onTurnstileError = (e) => {
+  console.log('人机验加载失败')
+  nextTick(() => {
+    if (!turnstileId) {
+      turnstileId = window.turnstile.render('.register-turnstile')
+    } else {
+      window.turnstile.reset(turnstileId);
+    }
+  })
+};
+
 window.onTurnstileSuccess = (token) => {
   verifyToken = token;
-  setTimeout(() => {
-    verifyShow.value = false
-  },1500)
 };
 
 function setName() {
@@ -338,14 +350,27 @@ function submit()  {
     })
     return
   }
-  if (!verifyToken && settingStore.settings.addEmailVerify === 0) {
-    verifyShow.value = true
-    if (!turnstileId) {
+  if (!verifyToken && (settingStore.settings.addEmailVerify === 0 || (settingStore.settings.addEmailVerify === 2 && settingStore.settings.addVerifyOpen))) {
+    if (!verifyShow.value) {
+      verifyShow.value = true
       nextTick(() => {
-        turnstileId = window.turnstile.render('.add-email-turnstile')
+        if (!turnstileId) {
+          try {
+            turnstileId = window.turnstile.render('.add-email-turnstile')
+          } catch (e) {
+            botJsError.value = true
+            console.log('人机验证js加载失败')
+          }
+        } else {
+          window.turnstile.reset('.add-email-turnstile')
+        }
       })
-    } else {
-      window.turnstile.reset(turnstileId)
+    } else if (!botJsError.value) {
+      ElMessage({
+        message: t('botVerifyMsg'),
+        type: "error",
+        plain: true
+      })
     }
     return;
   }
@@ -357,16 +382,24 @@ function submit()  {
     addForm.email = ''
     accounts.push(account)
     verifyToken = ''
+    settingStore.settings.addVerifyOpen = account.addVerifyOpen
     ElMessage({
       message: t('addSuccessMsg'),
       type: "success",
       plain: true
     })
+    verifyShow.value = false
     userStore.refreshUserInfo()
   }).catch(res => {
     if (res.code === 400) {
       verifyToken = ''
-      window.turnstile.reset(turnstileId)
+      if (turnstileId) {
+        window.turnstile.reset(turnstileId)
+      } else {
+        nextTick(() => {
+          turnstileId = window.turnstile.render('.add-email-turnstile')
+        })
+      }
       verifyShow.value = true
     }
     addLoading.value = false
