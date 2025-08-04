@@ -30,21 +30,6 @@
         </div>
       </div>
     </div>
-    <div class="container lang">
-      <div class="title">{{$t('language')}}</div>
-      <div>
-          <el-select v-model="lang" placeholder="Select" style="width: 100px">
-          <el-option
-              key="zh"
-              label="简体中文"
-              value="zh"/>
-          <el-option
-              key="en"
-              label="English"
-              value="en"/>
-        </el-select>
-      </div>
-    </div>
     <div class="del-email" v-perm="'my:delete'">
       <div class="title">{{$t('deleteUser')}}</div>
       <div style="color: #585d69;">
@@ -64,31 +49,23 @@
   </div>
 </template>
 <script setup>
-import {reactive, ref, defineOptions, watch} from 'vue'
+import {reactive, ref, defineOptions} from 'vue'
 import {resetPassword, userDelete} from "@/request/my.js";
 import {useUserStore} from "@/store/user.js";
 import router from "@/router/index.js";
-import { storeToRefs } from 'pinia'
 import {accountSetName} from "@/request/account.js";
 import {useAccountStore} from "@/store/account.js";
 import {useI18n} from "vue-i18n";
-import {useSettingStore} from "@/store/setting.js";
 
 const { t } = useI18n()
-const settingStore = useSettingStore()
 const accountStore = useAccountStore()
 const userStore = useUserStore();
 const setPwdLoading = ref(false)
 const setNameShow = ref(false)
 const accountName = ref(null)
-const { lang } = storeToRefs(settingStore)
 
 defineOptions({
   name: 'setting'
-})
-
-watch(() => lang.value,() => {
-  window.location.reload()
 })
 
 function showSetName() {
@@ -118,7 +95,7 @@ function setName() {
 
   accountSetName(userStore.user.accountId,name).then(() => {
     ElMessage({
-      message: t('changSuccessMsg'),
+      message: t('saveSuccessMsg'),
       type: 'success',
       plain: true,
     })
@@ -187,7 +164,7 @@ function submitPwd() {
   setPwdLoading.value = true
   resetPassword(form.password).then(() => {
     ElMessage({
-      message: t('changSuccessMsg'),
+      message: t('saveSuccessMsg'),
       type: 'success',
       plain: true,
     })

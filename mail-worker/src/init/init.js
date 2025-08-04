@@ -2,13 +2,14 @@ import settingService from '../service/setting-service';
 import emailUtils from '../utils/email-utils';
 import {emailConst} from "../const/entity-const";
 import { t } from '../i18n/i18n'
+
 const init = {
 	async init(c) {
 
 		const secret = c.req.param('secret');
 
 		if (secret !== c.env.jwt_secret) {
-			return c.text('jwt_secret 不匹配');
+			return c.text(t('JWTMismatch'));
 		}
 
 		await this.intDB(c);
@@ -25,6 +26,19 @@ const init = {
 
 	async v1_6DB(c) {
 
+		const noticeContent = '<div style="color: teal;margin-bottom: 5px;">欢迎使用 Cloud Mail 🎉 </div >\n' +
+			'本项目仅供学习交流，禁止用于违法业务\n' +
+			'<br>\n' +
+			'请遵守当地法规，作者不承担任何法律责任\n' +
+			'<div style="display: flex;gap: 18px;margin-top: 10px;">\n' +
+			'<a href="https://github.com/eoao/cloud-mail" target="_blank" >\n' +
+			'<img src="https://api.iconify.design/codicon:github-inverted.svg" alt="GitHub" width="25" height="25" />\n' +
+			'</a>\n' +
+			'<a href="https://t.me/cloud_mail_tg" target="_blank" >\n' +
+			'<img src="https://api.iconify.design/logos:telegram.svg" alt="GitHub" width="25" height="25" />\n' +
+			'</a>\n' +
+			'</div>\n'
+
 		const ADD_COLUMN_SQL_LIST = [
 			`ALTER TABLE setting ADD COLUMN reg_verify_count INTEGER NOT NULL DEFAULT 1;`,
 			`ALTER TABLE setting ADD COLUMN add_verify_count INTEGER NOT NULL DEFAULT 1;`,
@@ -34,16 +48,42 @@ const init = {
 				count INTEGER NOT NULL DEFAULT 1,
 				type INTEGER NOT NULL DEFAULT 0,
 				update_time DATETIME DEFAULT CURRENT_TIMESTAMP
-      )`
+      )`,
+			`ALTER TABLE setting ADD COLUMN notice_title TEXT NOT NULL DEFAULT '公告';`,
+			`ALTER TABLE setting ADD COLUMN notice_content TEXT NOT NULL DEFAULT '';`,
+			`ALTER TABLE setting ADD COLUMN notice_type TEXT NOT NULL DEFAULT 'none';`,
+			`ALTER TABLE setting ADD COLUMN notice_duration INTEGER NOT NULL DEFAULT 0;`,
+			`ALTER TABLE setting ADD COLUMN notice_offset INTEGER NOT NULL DEFAULT 0;`,
+			`ALTER TABLE setting ADD COLUMN notice_position TEXT NOT NULL DEFAULT 'top-right';`,
+			`ALTER TABLE setting ADD COLUMN notice_width INTEGER NOT NULL DEFAULT 340;`,
+			`ALTER TABLE setting ADD COLUMN notice INTEGER NOT NULL DEFAULT 0;`,
+			`ALTER TABLE setting ADD COLUMN no_recipient INTEGER NOT NULL DEFAULT 1;`,
+			`UPDATE role SET avail_domain = '';`,
+			`UPDATE role SET ban_email = '';`,
+			`CREATE INDEX IF NOT EXISTS idx_email_user_id_account_id ON email(user_id, account_id);`
 		];
 
-		for (let sql of ADD_COLUMN_SQL_LIST) {
+		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
 			try {
 				await c.env.db.prepare(sql).run();
 			} catch (e) {
-				console.warn(`跳过字段添加，原因：${e.message}`);
+				console.warn(`通过字段，原因：${e.message}`);
 			}
+		});
+
+		await Promise.all(promises);
+		await c.env.db.prepare(`UPDATE setting SET notice_content = ? WHERE notice_content = '';`).bind(noticeContent).run();
+		try {
+			await c.env.db.batch([
+				c.env.db.prepare(`DROP INDEX IF EXISTS idx_account_email`),
+				c.env.db.prepare(`DROP INDEX IF EXISTS idx_user_email`),
+				c.env.db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_account_email_nocase ON account (email COLLATE NOCASE)`),
+				c.env.db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_user_email_nocase ON user (email COLLATE NOCASE)`)
+			]);
+		} catch (e) {
+			console.error(e.message)
 		}
+
 	},
 
 	async v1_5DB(c) {
@@ -97,13 +137,15 @@ const init = {
 			`ALTER TABLE user ADD COLUMN reg_key_id INTEGER NOT NULL DEFAULT 0;`
 		];
 
-		for (let sql of ADD_COLUMN_SQL_LIST) {
+		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
 			try {
 				await c.env.db.prepare(sql).run();
 			} catch (e) {
 				console.warn(`跳过字段添加，原因：${e.message}`);
 			}
-		}
+		});
+
+		await Promise.all(promises);
 
 	},
 
@@ -123,13 +165,15 @@ const init = {
 			`ALTER TABLE setting ADD COLUMN rule_type INTEGER NOT NULL DEFAULT 0;`
 		];
 
-		for (let sql of ADD_COLUMN_SQL_LIST) {
+		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
 			try {
 				await c.env.db.prepare(sql).run();
 			} catch (e) {
 				console.warn(`跳过字段添加，原因：${e.message}`);
 			}
-		}
+		});
+
+		await Promise.all(promises);
 
 		const nameColumn = await c.env.db.prepare(`SELECT * FROM pragma_table_info('email') WHERE name = 'to_email' limit 1`).first();
 
@@ -158,13 +202,15 @@ const init = {
 			`ALTER TABLE email ADD COLUMN relation TEXT NOT NULL DEFAULT '';`
 		];
 
-		for (let sql of ADD_COLUMN_SQL_LIST) {
+		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
 			try {
 				await c.env.db.prepare(sql).run();
 			} catch (e) {
 				console.warn(`跳过字段添加，原因：${e.message}`);
 			}
-		}
+		});
+
+		await Promise.all(promises);
 
 		await this.receiveEmailToRecipient(c);
 		await this.initAccountName(c);
@@ -176,13 +222,6 @@ const init = {
         (32,'数据查看', 'analysis:query', 31, 2, 1)`).run();
 		} catch (e) {
 			console.warn(`跳过数据，原因：${e.message}`);
-		}
-
-		try {
-			await c.env.db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_account_email ON account (email)`).run();
-			await c.env.db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_user_email ON user (email)`).run();
-		} catch (e) {
-			console.warn(`跳过添加唯一邮箱索引，原因：${e.message}`);
 		}
 
 	},
@@ -215,13 +254,15 @@ const init = {
 			`ALTER TABLE attachments ADD COLUMN type INTEGER NOT NULL DEFAULT 0;`
 		];
 
-		for (let sql of ADD_COLUMN_SQL_LIST) {
+		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
 			try {
 				await c.env.db.prepare(sql).run();
 			} catch (e) {
 				console.warn(`跳过字段添加，原因：${e.message}`);
 			}
-		}
+		});
+
+		await Promise.all(promises);
 
 		// 创建 perm 表并初始化
 		await c.env.db.prepare(`
@@ -298,7 +339,7 @@ const init = {
         INSERT INTO role (
           role_id, name, key, create_time, sort, description, user_id, is_default, send_count, send_type, account_count
         ) VALUES (
-          1, '普通用户', NULL, '0000-00-00 00:00:00', 0, '只有普通使用权限', 0, 1, NULL, 'count', 10
+          1, '普通用户', NULL, '0000-00-00 00:00:00', 0, '只有普通使用权限', 0, 1, NULL, 'ban', 10
         )
       `).run();
 		}
@@ -323,7 +364,8 @@ const init = {
           (104, 1, 24),
           (105, 1, 4),
           (106, 1, 5),
-          (107, 1, 1)
+          (107, 1, 1),
+          (108, 1, 3)
       `).run();
 		}
 	},
@@ -468,5 +510,4 @@ const init = {
 		await c.env.db.batch(queryList);
 	}
 };
-
 export default init;

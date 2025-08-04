@@ -12,10 +12,10 @@
           </div>
           <div class="opt">
             <div class="send-email" @click.stop>
-              <Icon  icon="eva:email-fill" width="22" height="22" color="#fbbd08" />
+              <Icon  icon="eva:email-fill" width="22" height="22" color="#fccb1a" />
             </div>
             <div class="settings" @click.stop>
-              <Icon icon="streamline-ultimate-color:copy-paste-1" width="19" height="19" @click.stop="copyAccount(item.email)"/>
+              <Icon icon="fluent-color:clipboard-24" width="22" height="22" @click.stop="copyAccount(item.email)"/>
               <Icon icon="fluent:settings-24-filled" width="21" height="21" color="#909399" v-if="showNullSetting(item)" />
               <el-dropdown v-else>
                 <Icon icon="fluent:settings-24-filled"  width="21" height="21" color="#909399" />
@@ -217,7 +217,7 @@ function setName() {
     }
 
     ElMessage({
-      message: t('changSuccessMsg'),
+      message: t('saveSuccessMsg'),
       type: "success",
       plain: true
     })

@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import roleService from '../service/role-service';
+import verifyUtils from '../utils/verify-utils';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -28,7 +29,8 @@ export async function email(message, env, ctx) {
 			forwardEmail,
 			ruleEmail,
 			ruleType,
-			r2Domain
+			r2Domain,
+			noRecipient
 		} = await settingService.query({ env });
 
 		if (receive === settingConst.receive.CLOSE) {
@@ -47,7 +49,11 @@ export async function email(message, env, ctx) {
 
 		const email = await PostalMime.parse(content);
 
-		const account = await accountService.selectByEmailIncludeDelNoCase({ env: env }, message.to);
+		const account = await accountService.selectByEmailIncludeDel({ env: env }, message.to);
+
+		if (!account && noRecipient === settingConst.noRecipient.CLOSE) {
+			return;
+		}
 
 		if (account && account.email !== env.admin) {
 
@@ -61,9 +67,9 @@ export async function email(message, env, ctx) {
 
 			for (const item of banEmail) {
 
-				if (item.startsWith('*@')) {
+				if (verifyUtils.isDomain(item)) {
 
-					const banDomain = emailUtils.getDomain(item.toLowerCase());
+					const banDomain = item.toLowerCase();
 					const receiveDomain = emailUtils.getDomain(email.from.address.toLowerCase());
 
 					if (banDomain === receiveDomain) {

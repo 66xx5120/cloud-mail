@@ -130,7 +130,6 @@ import {debounce} from "lodash-es";
 import loading from "@/components/loading/index.vue";
 import {useRoute} from "vue-router";
 import { useI18n } from 'vue-i18n';
-import {toUtc, tzDayjs} from "@/utils/day.js";
 
 defineOptions({
   name: 'analysis'
@@ -693,7 +692,7 @@ function createSendGauge() {
       grid-template-columns: 1fr;
     }
     .number-item {
-      background: #fff;
+      background: var(--el-bg-color);
       border-radius: 8px;
       border: 1px solid var(--el-border-color);
       padding: 21px 20px;

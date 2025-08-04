@@ -81,7 +81,7 @@
                 data-after-interactive-callback="loadAfter"
                 data-before-interactive-callback="loadBefore"
             >
-              <span style="font-size: 12px;color: #F56C6C" v-if="botJsError">人机验证模块加载失败,请刷新浏览器</span>
+              <span style="font-size: 12px;color: #F56C6C" v-if="botJsError">{{$t('verifyModuleFailed')}}</span>
             </div>
             <el-button class="btn" type="primary" @click="submitRegister" :loading="registerLoading"
             >{{$t('regBtn')}}
@@ -105,6 +105,7 @@ import {isEmail} from "@/utils/verify-utils.js";
 import {useSettingStore} from "@/store/setting.js";
 import {useAccountStore} from "@/store/account.js";
 import {useUserStore} from "@/store/user.js";
+import {useUiStore} from "@/store/ui.js";
 import {Icon} from "@iconify/vue";
 import {cvtR2Url} from "@/utils/convert.js";
 import {loginUserInfo} from "@/request/my.js";
@@ -114,6 +115,7 @@ import {useI18n} from "vue-i18n";
 const { t } = useI18n();
 const accountStore = useAccountStore();
 const userStore = useUserStore();
+const uiStore = useUiStore();
 const settingStore = useSettingStore();
 const loginLoading = ref(false)
 const show = ref('login')
@@ -220,6 +222,7 @@ const submit = () => {
       router.addRoute('layout', routerData);
     });
     await router.replace({name: 'layout'})
+    uiStore.showNotice()
   }).finally(() => {
     loginLoading.value = false
   })

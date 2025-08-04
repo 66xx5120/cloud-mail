@@ -10,8 +10,19 @@
       </div>
     </div>
     <div class="toolbar">
-      <div class="email">
-        <span>{{ userStore.user.email }}</span>
+      <el-dropdown>
+        <div class="translate icon-item">
+          <Icon icon="carbon:ibm-watson-language-translator" />
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="changeLang('zh')">简体中文</el-dropdown-item>
+            <el-dropdown-item @click="changeLang('en')">English</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+      <div class="notice icon-item" @click="openNotice">
+        <Icon icon="streamline-plump:announcement-megaphone" />
       </div>
       <el-dropdown :teleported="false" popper-class="detail-dropdown" >
         <div class="avatar">
@@ -28,7 +39,7 @@
             <div class="user-name">
               {{userStore.user.name}}
             </div>
-            <div class="detail-email">
+            <div class="detail-email" @click="copyEmail(userStore.user.email)">
               {{ userStore.user.email }}
             </div>
             <div class="detail-user-type">
@@ -136,6 +147,32 @@ const sendCount = computed(() => {
   return userStore.user.sendCount + '/' + userStore.user.role.sendCount
 })
 
+async function copyEmail(email) {
+  try {
+    await navigator.clipboard.writeText(email);
+    ElMessage({
+      message: t('copySuccessMsg'),
+      type: 'success',
+      plain: true,
+    })
+  } catch (err) {
+    console.error(`${t('copyFailMsg')}:`, err);
+    ElMessage({
+      message: t('copyFailMsg'),
+      type: 'error',
+      plain: true,
+    })
+  }
+}
+
+function changeLang(lang) {
+  settingStore.lang = lang
+}
+
+function openNotice() {
+  uiStore.showNotice()
+}
+
 function openSend() {
   uiStore.writerRef.open()
 }
@@ -224,6 +261,7 @@ function formatName(email) {
     text-overflow: ellipsis;
     text-align: center;
     color: #5c5958;
+    cursor: pointer;
   }
   .logout {
     margin-top: 20px;
@@ -272,11 +310,11 @@ function formatName(email) {
   justify-content: center;
   margin-left: 5px;
   .writer {
-    width:  36px;
-    height: 36px;
+    width:  34px;
+    height: 34px;
     border-radius: 50%;
     color: #ffffff;
-    background: linear-gradient(135deg, #1890ff, #1c6dd0);
+    background: linear-gradient(135deg, #1890ff, #3a80dd);
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -298,38 +336,41 @@ function formatName(email) {
 
 
 .toolbar {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  margin-left: auto;
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr auto;
+  display: flex;
+  justify-content: end;
+  gap: 15px;
+  @media (max-width: 767px) {
+    gap: 10px;
   }
-  .full {
+  .icon-item {
+    align-self: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-right: 20px;
     cursor: pointer;
-    @media (max-width: 1024px) {
-      display: none;
-    }
   }
-  .email {
-    align-self: center;
-    font-size: 14px;
-    margin-right: 10px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-weight: bold;
-    width: 100%;
+
+  .icon-item:hover {
+    background: #F0F2F5;
+  }
+
+  .notice {
+    font-size: 22px;
+    margin-right: 4px;
+  }
+
+  .translate {
+    padding-top: 2px;
+    font-size: 21px;
   }
 
   .avatar {
     display: flex;
     align-items: center;
     cursor: pointer;
-    margin-left: 10px;
     .avatar-text {
       height: 30px;
       width: 30px;

@@ -45,8 +45,8 @@
           <el-option key="1" :label="$t('all')" value="all"/>
           <el-option key="3" :label="$t('received')" value="receive"/>
           <el-option key="2" :label="$t('sent')" value="send"/>
-          <el-option key="4" :label="$t('deleted')" value="delete"/>
-          <el-option key="4" :label="$t('noRecipient')" value="noone"/>
+          <el-option key="4" :label="$t('selectDeleted')" value="delete"/>
+          <el-option key="4" :label="$t('noRecipientTitle')" value="noone"/>
         </el-select>
         <Icon class="icon" icon="iconoir:search" @click="search" width="20" height="20"/>
         <Icon class="icon" @click="changeTimeSort" icon="material-symbols-light:timer-arrow-down-outline"

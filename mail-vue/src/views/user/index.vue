@@ -502,6 +502,7 @@ function submit() {
 function formatSendType(user) {
   if (user.sendAction.sendType === 'day') return t('daily')
   if (user.sendAction.sendType === 'count') return t('total')
+  if (user.sendAction.sendType === 'ban') return t('sendBanned')
 }
 
 function formatSendCount(user) {
@@ -617,7 +618,7 @@ function httpSetStatus(user) {
   userSetStatus({status: status, userId: user.userId}).then(() => {
     user.status = status
     ElMessage({
-      message: t('changSuccessMsg'),
+      message: t('saveSuccessMsg'),
       type: "success",
       plain: true
     })
@@ -630,7 +631,7 @@ function setType() {
     chooseUser.type = userForm.type
     setTypeShow.value = false
     ElMessage({
-      message: t('changSuccessMsg'),
+      message: t('saveSuccessMsg'),
       type: "success",
       plain: true
     })
@@ -675,7 +676,7 @@ function updatePwd() {
   userSetPwd({password: userForm.password, userId: userForm.userId}).then(() => {
     setPwdShow.value = false
     ElMessage({
-      message: t('changSuccessMsg'),
+      message: t('saveSuccessMsg'),
       type: "success",
       plain: true
     })

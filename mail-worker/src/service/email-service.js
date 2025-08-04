@@ -58,9 +58,9 @@ const emailService = {
 			)
 			.where(
 				and(
-					timeSort ? gt(email.emailId, emailId) : lt(email.emailId, emailId),
-					eq(email.accountId, accountId),
 					eq(email.userId, userId),
+					eq(email.accountId, accountId),
+					timeSort ? gt(email.emailId, emailId) : lt(email.emailId, emailId),
 					eq(email.type, type),
 					eq(email.isDel, isDel.NORMAL)
 				)
@@ -280,7 +280,7 @@ const emailService = {
 
 
 		if (error) {
-			throw new BizError(error.error);
+			throw new BizError(error.message);
 		}
 
 		html = this.imgReplace(html, null, r2Domain);

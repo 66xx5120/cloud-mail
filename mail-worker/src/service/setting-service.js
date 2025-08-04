@@ -139,7 +139,15 @@ const settingService = {
 			domainList:settingRow.domainList,
 			regKey: settingRow.regKey,
 			regVerifyOpen: settingRow.regVerifyOpen,
-			addVerifyOpen: settingRow.addVerifyOpen
+			addVerifyOpen: settingRow.addVerifyOpen,
+			noticeTitle: settingRow.noticeTitle,
+			noticeContent: settingRow.noticeContent,
+			noticeType: settingRow.noticeType,
+			noticeDuration: settingRow.noticeDuration,
+			noticePosition: settingRow.noticePosition,
+			noticeWidth: settingRow.noticeWidth,
+			noticeOffset: settingRow.noticeOffset,
+			notice: settingRow.notice,
 		};
 	}
 };

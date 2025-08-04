@@ -103,6 +103,10 @@ export const settingConst = {
 	ruleType: {
 		ALL: 0,
 		RULE: 1
+	},
+	noRecipient: {
+		OPEN: 0,
+		CLOSE: 1,
 	}
 }
 

@@ -1,6 +1,6 @@
 name = "cloud-mail-test"
 main = "src/index.js"
-compatibility_date = "2025-04-09"
+compatibility_date = "2025-07-29"
 keep_vars = true
 
 [observability]

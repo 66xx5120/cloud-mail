@@ -94,7 +94,7 @@ const route = useRoute();
   justify-content: center;
   gap: 5px;
   color: #ffffff;
-  background: linear-gradient(135deg, #1890ff, #1c6dd0);
+  background: linear-gradient(135deg, #1890ff, #3a80dd);
   transition: all 0.3s ease;
 
   :deep(.el-icon) {

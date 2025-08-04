@@ -25,5 +25,14 @@ export const setting = sqliteTable('setting', {
 	ruleType: integer('rule_type').default(0).notNull(),
 	loginOpacity: integer('login_opacity').default(0.88),
 	resendTokens: text('resend_tokens').default("{}").notNull(),
+	noticeTitle: text('notice_title').default('').notNull(),
+	noticeContent: text('notice_content').default('').notNull(),
+	noticeType: text('notice_type').default('').notNull(),
+	noticeDuration: integer('notice_duration').default(0).notNull(),
+	noticePosition: text('notice_position').default('').notNull(),
+	noticeOffset: integer('notice_offset').default(0).notNull(),
+	noticeWidth: integer('notice_width').default(400).notNull(),
+	notice: integer('notice').default(0).notNull(),
+	noRecipient: integer('no_recipient').default(1).notNull()
 });
 export default setting

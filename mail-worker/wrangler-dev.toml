@@ -1,6 +1,6 @@
 name = "cloud-mail-dev"
 main = "src/index.js"
-compatibility_date = "2025-04-09"
+compatibility_date = "2025-07-29"
 keep_vars = true
 
 [observability]
@@ -32,7 +32,7 @@ run_worker_first = true
 crons = ["0 16 * * *"]
 
 [vars]
-orm_log = false
+orm_log = true
 domain = ["example.com", "example2.com", "example3.com", "example4.com"]
 admin = "admin@example.com"
 jwt_secret = "b7f29a1d-18e2-4d3b-941f-f6b2c97c02fd"

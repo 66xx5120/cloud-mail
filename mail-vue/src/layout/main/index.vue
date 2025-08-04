@@ -13,22 +13,73 @@
 import account from '@/layout/account/index.vue'
 import {useUiStore} from "@/store/ui.js";
 import {useSettingStore} from "@/store/setting.js";
-import {computed, onBeforeUnmount, onMounted} from "vue";
+import {computed, onBeforeUnmount, onMounted, watch} from "vue";
 import { useRoute } from 'vue-router'
 import { hasPerm } from "@/perm/perm.js"
-
-const props = defineProps({
-  openSend: Function
-})
 
 const settingStore = useSettingStore()
 const uiStore = useUiStore();
 const route = useRoute()
 let  innerWidth =  window.innerWidth
 
+let elNotification = null
+
 const accountShow = computed(() => {
   return uiStore.accountShow && settingStore.settings.manyEmail === 0
 })
+
+watch(() => uiStore.changeNotice, () => {
+
+  const settings = settingStore.settings
+
+  let data = {
+    notice: settings.notice,
+    noticeWidth: settings.noticeWidth,
+    noticeTitle: settings.noticeTitle,
+    noticeContent: settings.noticeContent,
+    noticeType: settings.noticeType,
+    noticeDuration: settings.noticeDuration,
+    noticePosition: settings.noticePosition,
+    noticeOffset: settings.noticeOffset
+  }
+
+  showNotice(data)
+})
+
+watch(() => uiStore.changePreview, () => {
+  showNotice(uiStore.previewData)
+})
+
+function showNotice(data) {
+
+  if (data.notice === 1) {
+    return;
+  }
+
+  if (elNotification) {
+    elNotification.close()
+  }
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+  .custom-notice.el-notification {
+    --el-notification-width: min(${data.noticeWidth}px,calc(100% - 30px)) !important;
+  }
+  `;
+
+  document.head.appendChild(style);
+
+  elNotification = ElNotification({
+    title: data.noticeTitle,
+    message: `<div style="width: 100%;height: 100%;">${data.noticeContent}</div>`,
+    type: data.noticeType === 'none' ? '' : data.noticeType,
+    duration: data.noticeDuration,
+    position: data.noticePosition,
+    offset: data.noticeOffset,
+    dangerouslyUseHTMLString: true,
+    customClass: 'custom-notice'
+  })
+}
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)
@@ -49,7 +100,6 @@ const handleResize = () => {
 }
 
 </script>
-
 <style lang="scss" scoped>
 
 .block-show {

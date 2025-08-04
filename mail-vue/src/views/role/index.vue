@@ -72,7 +72,7 @@
         <el-input-tag class="dialog-input-tag" tag-type="warning" :class="form.banEmail.length === 0 ? 'dialog-input' : '' " v-model="form.banEmail" @add-tag="banEmailAddTag"  type="text" :placeholder="$t('emailInterception')" autocomplete="off" />
         <el-radio-group class="dialog-radio" v-model="form.banEmailType" v-if="form.banEmail.length > 0">
           <el-radio :label="$t('removeAll')" :value="0" />
-          <el-radio :label="$t('removeBody')" :value="1" />
+          <el-radio :label="$t('removeContent')" :value="1" />
         </el-radio-group>
         <el-select
             class="dialog-input"
@@ -146,7 +146,7 @@ import loading from '@/components/loading/index.vue';
 import {useRoleStore} from "@/store/role.js";
 import {useUserStore} from "@/store/user.js";
 import {useSettingStore} from "@/store/setting.js";
-import {isEmail} from "@/utils/verify-utils.js";
+import {isEmail, isDomain} from "@/utils/verify-utils.js";
 import {useI18n} from "vue-i18n";
 
 defineOptions({
@@ -198,7 +198,10 @@ rolePermTree().then(tree => {
   treeList.push(...tree)
 })
 
-domainOptions = domainList.map(domain => ({label: domain,value: domain}))
+domainOptions = domainList.map(domain => {
+  const cleanDomain = domain.replace(/^@/, '');
+  return { label: cleanDomain, value: cleanDomain };
+});
 
 
 function availDomainChange() {
@@ -218,7 +221,7 @@ function banEmailAddTag(val) {
   form.banEmail.splice(form.banEmail.length - 1, 1)
 
   emails.forEach(email => {
-    if (isEmail(email) && !form.banEmail.includes(email)) {
+    if ((isEmail(email) || isDomain(email)) && !form.banEmail.includes(email)) {
       form.banEmail.push(email)
     }
   })
@@ -236,7 +239,7 @@ function roleFormClick() {
 function setDef(role) {
   roleSetDef(role.roleId).then(() => {
     ElMessage({
-      message: t('changSuccessMsg'),
+      message: t('saveSuccessMsg'),
       type: "success",
       plain: true
     })
@@ -297,7 +300,7 @@ function setRole() {
   permLoading.value = true
   roleSet(params).then(() => {
     ElMessage({
-      message: t('changSuccessMsg'),
+      message: t('saveSuccessMsg'),
       type: "success",
       plain: true
     })
@@ -340,6 +343,7 @@ function openRoleSet(role) {
   form.sendCount = role.sendCount
   form.accountCount = role.accountCount
   form.banEmail = role.banEmail
+  form.banEmailType = role.banEmailType
   form.availDomain = role.availDomain
   nextTick(() => {
     tree.value.setCheckedKeys(role.permIds)

@@ -23,11 +23,7 @@ const roleService = {
 
 		let roleRow = await orm(c).select().from(role).where(eq(role.name, name)).get();
 
-		if (roleRow) {
-			throw new BizError(t('roleNameExist'));
-		}
-
-		const notEmailIndex = banEmail.findIndex(item => !verifyUtils.isEmail(item))
+		const notEmailIndex = banEmail.findIndex(item => (!verifyUtils.isEmail(item) && !verifyUtils.isDomain(item)))
 
 		if (notEmailIndex > -1) {
 			throw new BizError(t('notEmail'));
@@ -76,7 +72,7 @@ const roleService = {
 
 		delete params.isDefault
 
-		const notEmailIndex = banEmail.findIndex(item => !verifyUtils.isEmail(item))
+		const notEmailIndex = banEmail.findIndex(item => (!verifyUtils.isEmail(item) && !verifyUtils.isDomain(item)))
 
 		if (notEmailIndex > -1) {
 			throw new BizError(t('notEmail'));
@@ -168,7 +164,7 @@ const roleService = {
 
 		const availIndex = availDomain.findIndex(item => {
 			const domain = emailUtils.getDomain(email.toLowerCase());
-			const availDomainItem = emailUtils.getDomain(item.toLowerCase());
+			const availDomainItem = item.toLowerCase();
 			console.log(domain,availDomainItem)
 			return domain === availDomainItem
 		})
