@@ -141,7 +141,7 @@ const emailService = {
 		const userRow = await userService.selectById(c, userId);
 		const roleRow = await roleService.selectById(c, userRow.type);
 
-		if (roleRow.sendType === 'ban') {
+		if (c.env.admin !== userRow.email && roleRow.sendType === 'ban') {
 			throw new BizError(t('bannedSend'), 403);
 		}
 
