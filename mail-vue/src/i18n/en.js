@@ -133,6 +133,7 @@ const en = {
     loginSwitch: 'Sign in',
     websiteSetting: 'Website',
     websiteReg: 'Sign Up',
+    loginDomain: 'Sign-In Box Domain',
     multipleEmail: 'Multiple Accounts',
     multipleEmailDesc: 'Enable this feature to allow users to add multiple accounts.',
     physicallyWipeData: 'Physically Wipe Data',
@@ -262,7 +263,7 @@ const en = {
     rulesVerifyTitle: 'Trigger After {count} Daily Uses per IP',
     botVerifyMsg: 'Please verify that you are human',
     noticeTitle: 'Notice',
-    noticePopup: 'Sign-in Popup',
+    noticePopup: 'Sign-In Popup',
     icon: 'Icon',
     position: 'Position',
     offset: 'Offset',
@@ -278,7 +279,9 @@ const en = {
     popUp: 'Pop Up',
     noRecipientTitle: 'No Recipient',
     noRecipientDesc: 'Emails can be received even without a registered email address.',
-    preview: 'Preview'
+    preview: 'Preview',
+    help: 'Help',
+    document: 'Document'
 }
 
 export default en

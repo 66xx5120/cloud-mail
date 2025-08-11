@@ -1,14 +1,14 @@
 <template>
   <div v-if="analysisLoading" class="analysis-loading">
-    <loading />
+    <loading/>
   </div>
-  <el-scrollbar  v-else style="height: 100%;">
+  <el-scrollbar v-else style="height: 100%;">
     <div class="analysis" :key="boxKey">
       <div class="number">
         <div class="number-item">
           <div class="top">
             <div class="left">
-              <div>{{$t('totalReceived')}}</div>
+              <div>{{ $t('totalReceived') }}</div>
               <div>
                 <el-statistic :formatter="value => Math.round(value)" :value="receiveData"/>
               </div>
@@ -20,14 +20,14 @@
             </div>
           </div>
           <div class="delete-ratio">
-            <div>{{$t('active')}} <span class="normal">{{numberCount.normalReceiveTotal}}</span></div>
-            <div>{{$t('deleted')}} <span class="deleted">{{numberCount.delReceiveTotal}}</span></div>
+            <div>{{ $t('active') }} <span class="normal">{{ numberCount.normalReceiveTotal }}</span></div>
+            <div>{{ $t('deleted') }} <span class="deleted">{{ numberCount.delReceiveTotal }}</span></div>
           </div>
         </div>
         <div class="number-item">
           <div class="top">
             <div class="left">
-              <div>{{$t('totalSent')}}</div>
+              <div>{{ $t('totalSent') }}</div>
               <div>
                 <el-statistic :formatter="value => Math.round(value)" :value="sendData"/>
               </div>
@@ -39,14 +39,14 @@
             </div>
           </div>
           <div class="delete-ratio">
-            <div>{{$t('active')}} <span class="normal">{{numberCount.normalSendTotal}}</span></div>
-            <div>{{$t('deleted')}} <span class="deleted">{{numberCount.delSendTotal}}</span></div>
+            <div>{{ $t('active') }} <span class="normal">{{ numberCount.normalSendTotal }}</span></div>
+            <div>{{ $t('deleted') }} <span class="deleted">{{ numberCount.delSendTotal }}</span></div>
           </div>
         </div>
         <div class="number-item">
           <div class="top">
             <div class="left">
-              <div>{{$t('totalMailboxes')}}</div>
+              <div>{{ $t('totalMailboxes') }}</div>
               <div>
                 <el-statistic :formatter="value => Math.round(value)" :value="accountData"/>
               </div>
@@ -58,14 +58,14 @@
             </div>
           </div>
           <div class="delete-ratio">
-            <div>{{$t('active')}} <span class="normal">{{numberCount.normalAccountTotal}}</span></div>
-            <div>{{$t('deleted')}} <span class="deleted">{{numberCount.delAccountTotal}}</span></div>
+            <div>{{ $t('active') }} <span class="normal">{{ numberCount.normalAccountTotal }}</span></div>
+            <div>{{ $t('deleted') }} <span class="deleted">{{ numberCount.delAccountTotal }}</span></div>
           </div>
         </div>
         <div class="number-item">
           <div class="top">
             <div class="left">
-              <div>{{$t('totalUsers')}}</div>
+              <div>{{ $t('totalUsers') }}</div>
               <div>
                 <el-statistic :formatter="value => Math.round(value)" :value="userData"/>
               </div>
@@ -77,19 +77,19 @@
             </div>
           </div>
           <div class="delete-ratio">
-            <div>{{$t('active')}} <span class="normal">{{numberCount.normalUserTotal}}</span></div>
-            <div>{{$t('deleted')}} <span class="deleted">{{numberCount.delUserTotal}}</span></div>
+            <div>{{ $t('active') }} <span class="normal">{{ numberCount.normalUserTotal }}</span></div>
+            <div>{{ $t('deleted') }} <span class="deleted">{{ numberCount.delUserTotal }}</span></div>
           </div>
         </div>
       </div>
       <div class="picture">
         <div class="picture-item">
           <div class="title" style="display: flex;justify-content: space-between;">
-            <span>{{$t('emailSource')}}</span>
+            <span>{{ $t('emailSource') }}</span>
             <span class="source-button" v-if="false">
-              <el-radio-group v-model="checkedSourceType" >
-                <el-radio-button label="发件人" value="sender"  />
-                <el-radio-button label="邮箱" value="email" />
+              <el-radio-group v-model="checkedSourceType">
+                <el-radio-button label="发件人" value="sender"/>
+                <el-radio-button label="邮箱" value="email"/>
               </el-radio-group>
             </span>
           </div>
@@ -98,7 +98,7 @@
           </div>
         </div>
         <div class="picture-item">
-          <div class="title">{{$t('userGrowth')}}</div>
+          <div class="title">{{ $t('userGrowth') }}</div>
           <div class="increase-line">
 
           </div>
@@ -106,11 +106,11 @@
       </div>
       <div class="picture-cs">
         <div class="picture-cs-item">
-          <div class="title">{{$t('emailGrowth')}}</div>
+          <div class="title">{{ $t('emailGrowth') }}</div>
           <div class="email-column"></div>
         </div>
         <div class="picture-cs-item">
-          <div class="title">{{$t('sentToday')}}</div>
+          <div class="title">{{ $t('sentToday') }}</div>
           <div class="send-count"></div>
         </div>
       </div>
@@ -129,13 +129,13 @@ import {useUiStore} from "@/store/ui.js";
 import {debounce} from "lodash-es";
 import loading from "@/components/loading/index.vue";
 import {useRoute} from "vue-router";
-import { useI18n } from 'vue-i18n';
+import {useI18n} from 'vue-i18n';
 
 defineOptions({
   name: 'analysis'
 })
 
-const { t } = useI18n();
+const {t} = useI18n();
 const route = useRoute();
 const uiStore = useUiStore()
 const checkedSourceType = ref('sender')
@@ -218,13 +218,12 @@ onMounted(() => {
       }
     })
 
-    userLineData.xdata = data.userDayCount.map(item => dayjs(item.date).format("M.D"))
+    userLineData.xdata = data.userDayCount.map(item => dayjs(item.date).format("M.D"));
     userLineData.sdata = data.userDayCount.map(item => item.total)
 
     emailColumnData.daysData = data.emailDayCount.receiveDayCount.map(item => dayjs(item.date).format("M.D"))
     emailColumnData.receiveData = data.emailDayCount.receiveDayCount.map(item => item.total)
     emailColumnData.sendData = data.emailDayCount.sendDayCount.map(item => item.total)
-
     daySendTotal = data.daySendTotal
     analysisLoading.value = false
     initPicture();
@@ -234,8 +233,8 @@ onMounted(() => {
 })
 
 function initPicture() {
-  if(route.name !== 'analysis') return
-  boxKey.value ++
+  if (route.name !== 'analysis') return
+  boxKey.value++
   setTimeout(() => {
     createSenderPie()
     createIncreaseLine()
@@ -282,7 +281,7 @@ function setStyle() {
 const measureCtx = document.createElement('canvas').getContext('2d');
 measureCtx.font = '12px sans-serif';
 
-function truncateTextByWidth(text,maxWidth = 140) {
+function truncateTextByWidth(text, maxWidth = 140) {
 
   let width = measureCtx.measureText(text).width;
   if (width <= maxWidth) return text;
@@ -311,22 +310,22 @@ function createSenderPie() {
         return `${params.marker} ${params.name}： ${params.value} (${params.percent}%)`;
       }
     },
-      legend: {
-        type: 'scroll',
-        orient: 'vertical',
-        left: '10',
-        top: '20',
-        formatter: function (name) {
-          return truncateTextByWidth(name)
-        }
-      },
+    legend: {
+      type: 'scroll',
+      orient: 'vertical',
+      left: '10',
+      top: '20',
+      formatter: function (name) {
+        return truncateTextByWidth(name)
+      }
+    },
     series: [
       {
         data: senderData.value,
         name: '',
         type: 'pie',
         radius: ['40%', '65%'],
-        center: [ senderPieLeft, '45%'],
+        center: [senderPieLeft, '45%'],
         avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 4,
@@ -378,7 +377,7 @@ function createIncreaseLine() {
       formatter: function (params) {
         let result = ''
         params.forEach(item => {
-          result =  `${item.marker} ${t('growthTotalUsers')} ${item.value}`;
+          result = `${item.marker} ${t('growthTotalUsers')} ${item.value}`;
         });
         return result;
       },
@@ -438,7 +437,7 @@ function createIncreaseLine() {
       },
       boundaryGap: [0, 0.1],
       max: (params) => {
-        if (params.max < 8 ) {
+        if (params.max < 8) {
           return 10
         }
       },
@@ -493,6 +492,21 @@ function createIncreaseLine() {
     ]
   };
   increaseLine.setOption(option);
+
+  let max = increaseLine.getModel().getComponent('yAxis', 0).axis.scale.getExtent()[1];
+
+  let left = 35
+
+  if (max > 99) left = 42
+  if (max > 999) left = 51
+  if (max > 9999) left = 58
+  if (max > 99999) left = 66
+
+  increaseLine.setOption({
+    grid: {
+      left: left
+    }
+  });
 }
 
 function createEmailColumnChart() {
@@ -537,7 +551,7 @@ function createEmailColumnChart() {
     },
     yAxis: {
       max: (params) => {
-        if (params.max < 8 ) {
+        if (params.max < 8) {
           return 10
         }
       },
@@ -584,7 +598,7 @@ function createEmailColumnChart() {
 }
 
 function createSendGauge() {
-  if(sendGauge) {
+  if (sendGauge) {
     sendGauge.dispose()
   }
   sendGauge = echarts.init(document.querySelector(".send-count"));
@@ -649,6 +663,7 @@ function createSendGauge() {
   margin-top: 10px;
   font-size: 28px;
 }
+
 .percentage-label {
   display: block;
   margin-top: 10px;
@@ -663,6 +678,7 @@ function createSendGauge() {
   align-items: center;
   justify-content: center;
 }
+
 .analysis {
   height: 100%;
   padding: 20px 20px 30px;
@@ -674,12 +690,14 @@ function createSendGauge() {
     padding: 15px 15px 30px;
     gap: 15px
   }
+
   .title {
     margin-top: 10px;
     margin-left: 15px;
     font-size: 18px;
     font-weight: 500;
   }
+
   .number {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -691,11 +709,13 @@ function createSendGauge() {
     @media (max-width: 767px) {
       grid-template-columns: 1fr;
     }
+
     .number-item {
       background: var(--el-bg-color);
       border-radius: 8px;
       border: 1px solid var(--el-border-color);
       padding: 21px 20px;
+
       .top {
         display: grid;
         justify-content: space-between;
@@ -719,6 +739,7 @@ function createSendGauge() {
         .right {
           display: grid;
           align-items: center;
+
           .count-icon {
             top: 3px;
             position: relative;
@@ -740,6 +761,7 @@ function createSendGauge() {
         justify-content: start;
         gap: 20px;
         padding-top: 5px;
+
         .normal {
           width: fit-content;
           color: var(--el-color-success);
@@ -768,24 +790,29 @@ function createSendGauge() {
     @media (max-width: 1024px) {
       gap: 15px;
     }
+
     .picture-item {
       background: #fff;
       border-radius: 8px;
       border: 1px solid var(--el-border-color);
+
       .source-button {
         padding-right: 15px;
         display: flex;
         align-items: start;
+
         :deep(.el-radio-button__inner) {
           padding: 6px 10px;
         }
       }
+
       .sender-pie {
         height: 350px;
         @media (max-width: 767px) {
           height: 200px;
         }
       }
+
       .increase-line {
         height: 350px;
         @media (max-width: 767px) {
@@ -803,16 +830,19 @@ function createSendGauge() {
       grid-template-columns: 1fr;
       gap: 15px;
     }
+
     .picture-cs-item {
       background: #fff;
       border-radius: 8px;
       border: 1px solid var(--el-border-color);
+
       .send-count {
         height: 350px;
         @media (max-width: 767px) {
           height: 320px;
         }
       }
+
       .email-column {
         height: 350px;
         @media (max-width: 767px) {

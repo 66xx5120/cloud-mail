@@ -18,7 +18,7 @@ const zh = {
     deleteUserBtn: '删除账户',
     changePassword: '修改密码',
     newPassword: '新的密码',
-    confirmPassword: '旧的密码',
+    confirmPassword: '确认密码',
     add: '添加',
     manage: '管理',
     rename: '改名',
@@ -133,6 +133,7 @@ const zh = {
     loginSwitch: '去登录',
     websiteSetting: '网站设置',
     websiteReg: '用户注册',
+    loginDomain: '登录框域名',
     multipleEmail: '多号模式',
     multipleEmailDesc: '开启后账号栏出现一个用户可以添加多个邮箱',
     physicallyWipeData: '物理清空数据',
@@ -246,7 +247,7 @@ const zh = {
     totalUserAccount: '{msg} 个',
     sendBanned: '已禁用',
     wrote: '来信',
-    support: '赞助',
+    support: '捐助',
     supportDesc: '请我喝杯奶茶',
     featDesc: '功能说明',
     emailInterception: '邮件拦截',
@@ -278,7 +279,9 @@ const zh = {
     popUp: '弹出',
     noRecipientTitle: '无人收件',
     noRecipientDesc: '即使没有注册的邮箱也能收到邮件',
-    preview: '预览'
+    preview: '预览',
+    help: '帮助',
+    document: '项目文档'
 
 }
 export default zh

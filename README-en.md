@@ -13,9 +13,10 @@
 
 ## Project Showcase
 
-[**👉 Online Demo**](https://skymail.ink)
+- [Online Demo](https://skymail.ink)<br>
+- [Deployment Guide](https://doc.skymail.ink/en/)<br>
+- [Beginner’s Guide – UI Deployment](https://doc.skymail.ink/en/guide/via-ui.html)
 
-[**👉 Beginner’s Guide – UI Deployment**](https://doc.skymail.ink)
 
 | ![](/doc/demo/demo1.png) | ![](/doc/demo/demo2.png) |
 |--------------------------|---------------------|
@@ -24,6 +25,8 @@
 | ![](/doc/demo/demo7.png) | ![](/doc/demo/demo8.png) |
 
 ## Features
+
+- **💰 Low-Cost Usage**: No server required — deploy to Cloudflare Workers to reduce costs.
 
 - **💻 Responsive Design**: Automatically adapts to both desktop and most mobile browsers.
 
@@ -36,6 +39,8 @@
 - **📦 Attachment Support**: Send and receive attachments, stored and downloaded via R2 object storage.
 
 - **🔔 Email Push**: Forward received emails to Telegram bots or other email providers.
+
+- **📡 Open API**: Supports batch user creation via API and multi-condition email queries
 
 - **📈 Data Visualization**: Use Echarts to visualize system data, including user email growth.
 
@@ -67,108 +72,18 @@
 
 - **File Storage**: [Cloudflare R2](https://developers.cloudflare.com/r2/)
 
-## Setup Guide
-
-### System Requirements
-
-Nodejs v18.20 +  
-
-Cloudflare account (with a bound domain)
-
-**Clone the project to your local machine:**
-``` shell
-git clone https://github.com/eoao/cloud-mail
-cd cloud-mail/mail-worker
-```
-
-**Install Dependencies:**
-```shell
-npm i
-```
-
-**Configure the Project**
-
-mail-worker/wrangler.toml
-
-```toml
-[[d1_databases]]
-binding = "db"			# Default binding name for D1 database, cannot be changed
-database_name = ""		# Database name
-database_id = ""		# Database ID
-
-[[kv_namespaces]]
-binding = "kv"			# Default binding name for KV storage, cannot be changed
-id = ""			        # KV namespace ID
-
-
-[[r2_buckets]]
-binding = "r2"                  # Default binding name for R2 storage, cannot be changed
-bucket_name = ""	        # R2 bucket name
-
-[assets]
-binding = "assets"		# Static asset binding name, cannot be changed
-directory = "./dist"	        # Directory for frontend Vue project build, default: dist
-
-[vars]
-orm_log = false
-domain = []			# Configure email domains, example: ["example1.com", "example2.com"]
-admin = ""		        # Admin email, example: "admin@example.com"
-jwt_secret = ""			# JWT secret for login tokens, choose a random string
-```
-
-**Deploy Remotely**
-
-1. Create KV, D1 database, and R2 object storage in Cloudflare Console.
-2. In the project directory `mail-worker/wrangler.toml`, configure the environment variables and database IDs/names.
-3. Run the deployment command:
-
-    ```shell
-    npm run deploy 
-    ```
-
-4. In Cloudflare → Account Home → Your Domain → Email → Email Routing → Route Rules → Catch-all Address, edit and route to the worker.
-
-5. In your browser, visit  `https://your-project-domain/api/init/your-jwt-secret` to initialize or update the D1 and KV databases.
-
-6. After deployment, log in to the site with the admin account to configure R2 domains, Turnstile keys, and more.
-
-
-**Run Locally**
-
-1. Run locally. Databases and object storage will automatically be set up, no manual creation needed. Data is stored in the `mail-worker/.wrangler` folder.
-
-    ```shell
-    npm run dev 
-    ```
-
-2. In your browser, visit `http://127.0.0.1:8787/api/init/your-jwt-secret` to initialize D1 and KV databases.
-
-3. For local testing, you can set the R2 domain to `http://127.0.0.1:8787/api/file`.
-
-**Email Sending**
-
-1. Register on Resend, then click on “Domains” to add and verify your domain. Wait for verification.
-
-2. Go to "API Keys" to create an API key, then copy the token and paste it in the project website settings.
-
-3. Go to "Webhooks" and add a callback URL  `https://your-project-domain/api/webhooks`.  
-   Select the following events: ✅ (email.bounced, email.complained, email.delivered, email.delivery_delayed).
-
-
-**Project Update**
-
-After the update, run `https://your-project-domain/api/init/your-jwt-secret` to synchronize the database schema.
 
 ## Support
 
-<a href="https://support.skymail.ink">
+
+<a href="https://doc.skymail.ink/support.html">
 <img width="170px" src="./doc/images/support.png" alt="">
 </a><br><br>
 
 
 **Special Sponsors**
 
-[DartNode](https://dartnode.com)：Providing cloud computing service resource support
+[DartNode](https://dartnode.com)：Providing cloud computing service resource support.
 
 [![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
 

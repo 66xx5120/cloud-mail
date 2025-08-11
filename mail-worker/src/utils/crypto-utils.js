@@ -25,6 +25,15 @@ const saltHashUtils = {
 	async verifyPassword(inputPassword, salt, storedHash) {
 		const hash = await this.genHashPassword(inputPassword, salt);
 		return hash === storedHash;
+	},
+
+	genRandomPwd(length = 8) {
+		const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		let result = '';
+		for (let i = 0; i < length; i++) {
+			result += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+		return result;
 	}
 };
 

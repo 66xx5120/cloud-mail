@@ -34,7 +34,7 @@ const zh = {
 	noRegKeyTotal: '注册码使用次数已耗尽',
 	regKeyExpire: '注册码已过期',
 	emailAndPwdEmpty: '邮箱和密码不能为空',
-	notExistUser: '该邮箱不存在',
+	notExistUser: '输入的邮箱不存在',
 	isDelUser: '该邮箱已被注销',
 	isBanUser: '该邮箱已被禁用',
 	regKeyUseCount: '使用次数不能为空',
@@ -59,6 +59,9 @@ const zh = {
 	noDomainPermRegKey: '你的注册码没有权限注册该域名邮箱',
 	noDomainPermSend: '你没有权限使用该域名邮箱发送邮件',
 	JWTMismatch: 'jwt_secret 不匹配',
+	publicTokenFail: 'token验证失败',
+	notAdmin: '输入的邮箱不是管理员邮箱',
+	emailExistDatabase: '有邮箱已存在数据库中',
 	perms: {
 		"邮件": "邮件",
 		"邮件发送": "邮件发送",

@@ -1,28 +1,33 @@
 <template>
   <div class="account-box">
-    <div class="head-opt" >
-      <Icon v-perm="'account:add'" class="icon add" icon="ion:add-outline" width="23" height="23" @click="add" />
-      <Icon class="icon refresh" icon="ion:reload" width="18" height="18"  @click="refresh" />
+    <div class="head-opt">
+      <Icon v-perm="'account:add'" class="icon add" icon="ion:add-outline" width="23" height="23" @click="add"/>
+      <Icon class="icon refresh" icon="ion:reload" width="18" height="18" @click="refresh"/>
     </div>
     <el-scrollbar class="scrollbar">
-      <div v-infinite-scroll="getAccountList" :infinite-scroll-distance="600"  :infinite-scroll-immediate="false">
-        <el-card class="item" :class="itemBg(item.accountId)" v-for="item in accounts" :key="item.accountId" @click="changeAccount(item)">
-          <div class="account" >
+      <div v-infinite-scroll="getAccountList" :infinite-scroll-distance="600" :infinite-scroll-immediate="false">
+        <el-card class="item" :class="itemBg(item.accountId)" v-for="item in accounts" :key="item.accountId"
+                 @click="changeAccount(item)">
+          <div class="account">
             {{ item.email }}
           </div>
           <div class="opt">
             <div class="send-email" @click.stop>
-              <Icon  icon="eva:email-fill" width="22" height="22" color="#fccb1a" />
+              <Icon icon="eva:email-fill" width="22" height="22" color="#fccb1a"/>
             </div>
             <div class="settings" @click.stop>
               <Icon icon="fluent-color:clipboard-24" width="22" height="22" @click.stop="copyAccount(item.email)"/>
-              <Icon icon="fluent:settings-24-filled" width="21" height="21" color="#909399" v-if="showNullSetting(item)" />
+              <Icon icon="fluent:settings-24-filled" width="21" height="21" color="#909399"
+                    v-if="showNullSetting(item)"/>
               <el-dropdown v-else>
-                <Icon icon="fluent:settings-24-filled"  width="21" height="21" color="#909399" />
-                <template #dropdown >
-                  <el-dropdown-menu >
-                    <el-dropdown-item v-if="hasPerm('email:send')" @click="openSetName(item)">{{$t('rename')}}</el-dropdown-item>
-                    <el-dropdown-item v-if="item.accountId !== userStore.user.accountId && hasPerm('account:delete')" @click="remove(item)">{{$t('delete')}}</el-dropdown-item>
+                <Icon icon="fluent:settings-24-filled" width="21" height="21" color="#909399"/>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item v-if="hasPerm('email:send')" @click="openSetName(item)">{{ $t('rename') }}
+                    </el-dropdown-item>
+                    <el-dropdown-item v-if="item.accountId !== userStore.user.accountId && hasPerm('account:delete')"
+                                      @click="remove(item)">{{ $t('delete') }}
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
@@ -32,13 +37,13 @@
 
         <!-- Initial Loading Skeleton -->
         <template v-if="loading">
-          <el-skeleton v-for="i in 3" :key="i"  animated>
+          <el-skeleton v-for="i in 3" :key="i" animated>
             <template #template>
               <el-card class="item">
-                <el-skeleton-item variant="p" style="width: 70%; height: 20px; margin-bottom: 20px" />
+                <el-skeleton-item variant="p" style="width: 70%; height: 20px; margin-bottom: 20px"/>
                 <div style="display: flex; justify-content: space-between">
-                  <el-skeleton-item variant="text" style="width: 20px" />
-                  <el-skeleton-item variant="text" style="width: 20px" />
+                  <el-skeleton-item variant="text" style="width: 20px"/>
+                  <el-skeleton-item variant="text" style="width: 20px"/>
                 </div>
               </el-card>
             </template>
@@ -50,10 +55,10 @@
           <el-skeleton animated>
             <template #template>
               <el-card class="item">
-                <el-skeleton-item variant="p" style="width: 70%; height: 20px; margin-bottom: 20px" />
+                <el-skeleton-item variant="p" style="width: 70%; height: 20px; margin-bottom: 20px"/>
                 <div style="display: flex; justify-content: space-between">
-                  <el-skeleton-item variant="text" style="width: 20px" />
-                  <el-skeleton-item variant="text" style="width: 20px" />
+                  <el-skeleton-item variant="text" style="width: 20px"/>
+                  <el-skeleton-item variant="text" style="width: 20px"/>
                 </div>
               </el-card>
             </template>
@@ -61,43 +66,43 @@
         </template>
 
         <div class="noLoading" v-if="noLoading && accounts.length > 0">
-          <div>{{$t('noMoreData')}}</div>
+          <div>{{ $t('noMoreData') }}</div>
         </div>
         <div class="empty" v-if="noLoading && accounts.length === 0">
-          <el-empty :description="$t('noMessagesFound')" />
+          <el-empty :description="$t('noMessagesFound')"/>
         </div>
       </div>
 
     </el-scrollbar>
-    <el-dialog v-model="showAdd" :title="$t('addAccount')" >
-        <div class="container">
-          <el-input v-model="addForm.email" ref="addRef" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
-            <template #append>
-              <div  @click.stop="openSelect">
-                <el-select
-                    ref="mySelect"
-                    v-model="addForm.suffix"
-                    :placeholder="$t('select')"
-                    class="select"
-                >
-                  <el-option
-                      v-for="item in domainList"
-                      :key="item"
-                      :label="item"
-                      :value="item"
-                  />
-                </el-select>
-                <div style="color: #333">
-                  <span >{{addForm.suffix}}</span>
-                  <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20" />
-                </div>
+    <el-dialog v-model="showAdd" :title="$t('addAccount')">
+      <div class="container">
+        <el-input v-model="addForm.email" ref="addRef" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
+          <template #append>
+            <div @click.stop="openSelect">
+              <el-select
+                  ref="mySelect"
+                  v-model="addForm.suffix"
+                  :placeholder="$t('select')"
+                  class="select"
+              >
+                <el-option
+                    v-for="item in domainList"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                />
+              </el-select>
+              <div style="color: #333">
+                <span>{{ addForm.suffix }}</span>
+                <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
               </div>
-            </template>
-          </el-input>
-          <el-button class="btn" type="primary" @click="submit" :loading="addLoading"
-          >{{$t('add')}}
-          </el-button>
-        </div>
+            </div>
+          </template>
+        </el-input>
+        <el-button class="btn" type="primary" @click="submit" :loading="addLoading"
+        >{{ $t('add') }}
+        </el-button>
+      </div>
       <div
           class="add-email-turnstile"
           :class="verifyShow ? 'turnstile-show' : 'turnstile-hide'"
@@ -105,15 +110,15 @@
           data-callback="onTurnstileSuccess"
           data-error-callback="onTurnstileError"
       >
-        <span style="font-size: 12px;color: #F56C6C" v-if="botJsError">人机验证模块加载失败,请刷新浏览器</span>
+        <span style="font-size: 12px;color: #F56C6C" v-if="botJsError">{{ $t('verifyModuleFailed') }}</span>
       </div>
     </el-dialog>
-    <el-dialog v-model="setNameShow" :title="$t('changeUserName')" >
+    <el-dialog v-model="setNameShow" :title="$t('changeUserName')">
       <div class="container">
         <el-input v-model="accountName" type="text" :placeholder="$t('username')" autocomplete="off">
         </el-input>
         <el-button class="btn" type="primary" @click="setName" :loading="setNameLoading"
-        >{{$t('save')}}
+        >{{ $t('save') }}
         </el-button>
       </div>
     </el-dialog>
@@ -127,10 +132,10 @@ import {isEmail} from "@/utils/verify-utils.js";
 import {useSettingStore} from "@/store/setting.js";
 import {useAccountStore} from "@/store/account.js";
 import {useUserStore} from "@/store/user.js";
-import { hasPerm } from "@/perm/perm.js"
+import {hasPerm} from "@/perm/perm.js"
 import {useI18n} from "vue-i18n";
 
-const { t } = useI18n();
+const {t} = useI18n();
 const userStore = useUserStore();
 const accountStore = useAccountStore();
 const settingStore = useSettingStore();
@@ -150,6 +155,7 @@ let account = null
 let turnstileId = null
 const botJsError = ref(false)
 let verifyToken = ''
+let verifyErrorCount = 0
 const addForm = reactive({
   email: '',
   suffix: settingStore.domainList[0]
@@ -175,14 +181,20 @@ const openSelect = () => {
 }
 
 window.onTurnstileError = (e) => {
-  console.log('人机验加载失败')
-  nextTick(() => {
-    if (!turnstileId) {
-      turnstileId = window.turnstile.render('.register-turnstile')
-    } else {
-      window.turnstile.reset(turnstileId);
-    }
-  })
+  if (verifyErrorCount >= 4) {
+    return
+  }
+  verifyErrorCount++
+  console.warn('人机验加载失败', e)
+  setTimeout(() => {
+    nextTick(() => {
+      if (!turnstileId) {
+        turnstileId = window.turnstile.render('.add-email-turnstile')
+      } else {
+        window.turnstile.reset(turnstileId);
+      }
+    })
+  }, 1500)
 };
 
 window.onTurnstileSuccess = (token) => {
@@ -208,7 +220,7 @@ function setName() {
   }
 
   setNameLoading.value = true
-  accountSetName(account.accountId,name).then(() => {
+  accountSetName(account.accountId, name).then(() => {
     account.name = name
     setNameShow.value = false
 
@@ -221,12 +233,12 @@ function setName() {
       type: "success",
       plain: true
     })
-  }).finally(()=> {
+  }).finally(() => {
     setNameLoading.value = false
   })
 }
 
-function openSetName (accountItem) {
+function openSetName(accountItem) {
   accountName.value = accountItem.name
   account = accountItem
   setNameShow.value = true
@@ -241,7 +253,7 @@ function itemBg(accountId) {
 }
 
 function remove(account) {
-  ElMessageBox.confirm(t('delConfirm',{msg: account.email}), {
+  ElMessageBox.confirm(t('delConfirm', {msg: account.email}), {
     confirmButtonText: t('confirm'),
     cancelButtonText: t('cancel'),
     type: 'warning'
@@ -272,6 +284,7 @@ function refresh() {
   accounts.splice(0, accounts.length)
   getAccountList()
 }
+
 function changeAccount(account) {
   accountStore.currentAccountId = account.accountId
   accountStore.currentAccount = account
@@ -281,7 +294,7 @@ function add() {
   showAdd.value = true
   setTimeout(() => {
     addRef.value.focus()
-  },100)
+  }, 100)
 }
 
 async function copyAccount(account) {
@@ -308,11 +321,11 @@ function getAccountList() {
 
   if (accounts.length === 0) {
     loading.value = true
-  }else {
+  } else {
     followLoading.value = true
   }
 
-  accountList(queryParams.accountId,queryParams.size).then(list => {
+  accountList(queryParams.accountId, queryParams.size).then(list => {
     if (list.length < queryParams.size) {
       noLoading.value = true
     }
@@ -331,9 +344,9 @@ function getAccountList() {
 }
 
 
-function submit()  {
+function submit() {
 
-  if (!addForm.email){
+  if (!addForm.email) {
     ElMessage({
       message: t('emptyEmailMsg'),
       type: "error",
@@ -342,7 +355,7 @@ function submit()  {
     return
   }
 
-  if (!isEmail(addForm.email+addForm.suffix)) {
+  if (!isEmail(addForm.email + addForm.suffix)) {
     ElMessage({
       message: t('notEmailMsg'),
       type: "error",
@@ -376,7 +389,7 @@ function submit()  {
   }
 
   addLoading.value = true
-  accountAdd(addForm.email+addForm.suffix,verifyToken).then(account => {
+  accountAdd(addForm.email + addForm.suffix, verifyToken).then(account => {
     addLoading.value = false
     showAdd.value = false
     addForm.email = ''
@@ -418,6 +431,7 @@ path[fill="#ffdda1"] {
   background-color: #FFF;
   height: 100%;
   overflow: hidden;
+
   .head-opt {
     display: flex;
     align-items: center;
@@ -425,9 +439,11 @@ path[fill="#ffdda1"] {
     box-shadow: inset 0 -1px 0 0 rgba(100, 121, 143, 0.12);
     padding-left: 10px;
     padding-right: 10px;
-    .icon{
+
+    .icon {
       cursor: pointer;
     }
+
     .refresh {
       margin-left: 10px;
     }
@@ -440,6 +456,7 @@ path[fill="#ffdda1"] {
       margin-left: 5px;
     }
   }
+
   .scrollbar {
     width: 100%;
     height: calc(100% - 38px);
@@ -447,12 +464,14 @@ path[fill="#ffdda1"] {
     @media (max-width: 767px) {
       height: calc(100% - 98px);
     }
+
     .empty {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100%;
     }
+
     .noLoading {
       display: flex;
       justify-content: center;
@@ -461,6 +480,7 @@ path[fill="#ffdda1"] {
       color: gray;
     }
   }
+
   .btn {
     width: 100%;
     margin-top: 15px;
@@ -474,6 +494,7 @@ path[fill="#ffdda1"] {
     margin-left: 10px;
     margin-right: 10px;
     cursor: pointer;
+
     .account {
       font-weight: 600;
       margin-bottom: 20px;
@@ -488,11 +509,13 @@ path[fill="#ffdda1"] {
       justify-content: space-between;
       font-size: 12px;
       color: #888;
+
       .settings {
         display: flex;
         align-items: center;
         gap: 10px;
       }
+
       .send-email {
         display: flex;
         align-items: center;
@@ -503,8 +526,9 @@ path[fill="#ffdda1"] {
       padding: 0;
     }
   }
-  .item:first-child{
-    margin-top: 10px  ;
+
+  .item:first-child {
+    margin-top: 10px;
   }
 
   .item-choose {

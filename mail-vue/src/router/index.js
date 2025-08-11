@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {useUiStore} from "@/store/ui.js";
+import {replace} from "lodash-es";
 
 const routes = [
     {
@@ -81,12 +82,16 @@ router.beforeEach(async (to, from, next) => {
     if (!token && to.name !== 'login') {
 
         return next({
-            name: 'login'
+            name: 'login',
         })
     }
 
     if (!token && to.name === 'login') {
         return next()
+    }
+
+    if (token && to.name === 'login') {
+        next(from.path)
     }
 
     next()

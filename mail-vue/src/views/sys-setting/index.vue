@@ -17,6 +17,13 @@
                              v-model="setting.register"/>
                 </div>
               </div>
+                <div class="setting-item">
+                    <div><span>{{$t('loginDomain')}}</span></div>
+                    <div>
+                        <el-switch @change="change" :before-change="beforeChange" :active-value="0" :inactive-value="1"
+                                   v-model="setting.loginDomain"/>
+                    </div>
+                </div>
               <div class="setting-item">
                 <div><span>{{$t('regKey')}}</span></div>
                 <div>
@@ -326,7 +333,7 @@
             <div class="card-content">
               <div class="concerning-item">
                 <span>{{$t('version')}} :</span>
-                <span>v1.6.0</span>
+                <span>v1.7.0</span>
               </div>
               <div class="concerning-item">
                 <span>{{$t('community')}} : </span>
@@ -345,13 +352,22 @@
               </div>
               <div class="concerning-item">
                 <span>{{$t('support')}} : </span>
-                <el-button @click="jump('https://support.skymail.ink')" >
+                <el-button @click="jump('https://doc.skymail.ink/support.html')" >
                   {{t('supportDesc')}}
                   <template #icon>
                     <Icon color="#79D6B5" icon="simple-icons:buymeacoffee" width="20" height="20" />
                   </template>
                 </el-button>
               </div>
+                <div class="concerning-item">
+                    <span>{{$t('help')}} : </span>
+                    <el-button @click="jump('https://doc.skymail.ink')" >
+                        {{t('document')}}
+                        <template #icon>
+                            <Icon color="#79D6B5" icon="fluent-color:document-32" width="18" height="18" />
+                        </template>
+                    </el-button>
+                </div>
             </div>
           </div>
         </div>
@@ -1150,8 +1166,8 @@ function editSetting(settingForm, refreshStatus = true) {
 }
 
 .background {
-  width: 230px;
-  height: 120px;
+  width: 250px;
+  height: 140px;
   border-radius: 4px;
   border: 1px solid #e4e7ed;
   @media (max-width: 500px) {
@@ -1178,11 +1194,7 @@ function editSetting(settingForm, refreshStatus = true) {
   overflow: hidden;
 }
 
-@media (min-width: 885px) {
-  .about {
-    height: 210px;
-  }
-}
+
 
 .card-title {
   font-size: 15px;

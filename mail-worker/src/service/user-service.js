@@ -8,7 +8,6 @@ import kvConst from '../const/kv-const';
 import KvConst from '../const/kv-const';
 import cryptoUtils from '../utils/crypto-utils';
 import emailService from './email-service';
-import { UAParser } from 'ua-parser-js';
 import dayjs from 'dayjs';
 import permService from './perm-service';
 import roleService from './role-service';
@@ -16,6 +15,7 @@ import emailUtils from '../utils/email-utils';
 import saltHashUtils from '../utils/crypto-utils';
 import constant from '../const/constant';
 import { t } from '../i18n/i18n'
+import reqUtils from '../utils/req-utils';
 
 const userService = {
 
@@ -216,49 +216,22 @@ const userService = {
 
 	async updateUserInfo(c, userId, recordCreateIp = false) {
 
-		const ua = c.req.header('user-agent') || '';
-		console.log(ua);
-		const parser = new UAParser(ua);
-		const { browser, device, os } = parser.getResult();
 
-		let browserInfo = null;
-		let osInfo = null;
 
-		if (browser.name) {
-			browserInfo = browser.name + ' ' + browser.version;
-		}
+		const activeIp = reqUtils.getIp(c);
 
-		if (os.name) {
-			osInfo = os.name + os.version;
-		}
-
-		let deviceInfo = 'Desktop';
-
-		const hasVendor = !!device?.vendor;
-		const hasModel = !!device?.model;
-
-		if (hasVendor || hasModel) {
-			const vendor = device.vendor || '';
-			const model = device.model || '';
-			const type = device.type || '';
-
-			const namePart = [vendor, model].filter(Boolean).join(' ');
-			const typePart = type ? ` (${type})` : '';
-			deviceInfo = (namePart + typePart).trim();
-		}
-
-		const userIp = c.req.header('cf-connecting-ip') || '';
+		const {os, browser, device} = reqUtils.getUserAgent(c);
 
 		const params = {
-			os: osInfo,
-			browser: browserInfo,
-			device: deviceInfo,
-			activeIp: userIp,
+			os,
+			browser,
+			device,
+			activeIp,
 			activeTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
 		};
 
 		if (recordCreateIp) {
-			params.createIp = userIp;
+			params.createIp = activeIp;
 		}
 
 		await orm(c)

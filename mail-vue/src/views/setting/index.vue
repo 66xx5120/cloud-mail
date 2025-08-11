@@ -41,8 +41,8 @@
     </div>
     <el-dialog v-model="pwdShow" :title="$t('changePassword')" width="340">
       <div class="update-pwd">
-        <el-input type="password" :placeholder="$t('newPassword')" v-model="form.password"/>
-        <el-input type="password" :placeholder="$t('confirmPassword')" v-model="form.newPwd"/>
+        <el-input type="password" :placeholder="$t('newPassword')" v-model="form.password" autocomplete="off"/>
+        <el-input type="password" :placeholder="$t('confirmPassword')" v-model="form.newPwd" autocomplete="off"/>
         <el-button type="primary" :loading="setPwdLoading" @click="submitPwd">{{$t('save')}}</el-button>
       </div>
     </el-dialog>

@@ -20,8 +20,13 @@ const init = {
 		await this.v1_4DB(c);
 		await this.v1_5DB(c);
 		await this.v1_6DB(c);
+		await this.v1_7DB(c);
 		await settingService.refresh(c);
 		return c.text(t('initSuccess'));
+	},
+
+	async v1_7DB(c) {
+		 await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN login_domain INTEGER NOT NULL DEFAULT 0;`).run();
 	},
 
 	async v1_6DB(c) {

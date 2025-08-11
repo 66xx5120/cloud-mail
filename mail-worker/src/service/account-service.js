@@ -152,6 +152,10 @@ const accountService = {
 		await orm(c).insert(account).values({ ...params }).returning();
 	},
 
+	async insertList(c, list) {
+		await orm(c).insert(account).values(list).run();
+	},
+
 	async physicsDeleteAll(c) {
 		const accountIdsRow = await orm(c).select({accountId: account.accountId}).from(account).where(eq(account.isDel,isDel.DELETE)).limit(99);
 		if (accountIdsRow.length === 0) {

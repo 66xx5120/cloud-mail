@@ -14,7 +14,8 @@ const exclude = [
 	'/file',
 	'/setting/websiteConfig',
 	'/webhooks',
-	'/init'
+	'/init',
+	'/public/genToken'
 ];
 
 const requirePerms = [
@@ -92,6 +93,16 @@ app.use('*', async (c, next) => {
 	});
 
 	if (index > -1) {
+		return await next();
+	}
+
+	if (path.startsWith('/public')) {
+
+		const userPublicToken = await c.env.kv.get(KvConst.PUBLIC_KEY);
+		const publicToken = c.req.header(constant.TOKEN_HEADER);
+		if (publicToken !== userPublicToken) {
+			throw new BizError(t('publicTokenFail'), 401);
+		}
 		return await next();
 	}
 
