@@ -82,6 +82,103 @@
 - **文件存储**：[Cloudflare R2](https://developers.cloudflare.com/r2/)
 
 
+## 使用教程
+
+### 环境要求
+
+Nodejs v18.20 +
+
+Cloudflare 账号 (需要绑定域名)
+
+
+**克隆项目到本地**
+``` shell
+git clone https://github.com/eoao/cloud-mail #拉取代码
+cd cloud-mail/mail-worker #进入worker目录
+```
+
+**安装依赖**
+```shell
+npm i
+```
+
+**项目配置**
+
+mail-worker/wrangler.toml
+
+```toml
+[[d1_databases]]
+binding = "db"			#d1数据库绑定名默认不可修改
+database_name = ""		#d1数据库名字
+database_id = ""		#d1数据库id
+
+[[kv_namespaces]]
+binding = "kv"			#kv绑定名默认不可修改
+id = ""			        #kv数据库id
+
+
+[[r2_buckets]]
+binding = "r2"                  #r2对象存储绑定名默认不可修改
+bucket_name = ""	        #r2对象存储桶的名字
+	
+
+[assets]
+binding = "assets"		#静态资源绑定名默认不可修改
+directory = "./dist"	        #前端vue项目打包的静态资源存放位置,默认dist
+
+[vars]
+orm_log = false
+domain = []			#邮件域名可以配置多个示例: ["example1.com","example2.com"]
+admin = ""		        #管理员的邮箱 示例: "admin@example.com"
+jwt_secret = ""			#登录身份令牌的密钥,随便填一串字符串
+
+```
+
+
+
+**远程部署**
+
+1. 在 Cloudflare 控制台创建KV，D1数据库，R2对象存储
+2. 在项目目录 `mail-worker/wrangler.toml` 配置文件中配置对应环境变量，以及创建的数据库id和名称
+3. 执行远程部署命令
+
+    ```shell
+    npm run deploy 
+    ```
+
+4. 在Cloudflare→账户主页→你的域名→电子邮件→电子邮件路由→路由规则→Catch-all地址，编辑发送到worker
+
+5. 浏览器输入  `https://你的项目域名/api/init/你的jwt_secret`   初始化或更新 d1和kv数据库
+
+6. 部署完成登录网站，使用管理员账号可以在设置页面添加配置 R2域名 Turnstile密钥 等
+
+
+[👉 使用 Github Action 部署](/doc/github-action.md)
+
+**本地运行**
+
+1. 本地运行，数据库，对象存储会自动安装，无需创建，数据库数据保存在 `mail-worker/.wrangler` 文件夹
+
+    ```shell
+    npm run dev 
+    ```
+2. 浏览器输入   `http://127.0.0.1:8787/api/init/你的jwt_secret`   初始化d1和kv数据库
+
+3. 本地运行项目设置页面r2域名可设置为  `http://127.0.0.1:8787/api/file`
+
+**邮件发送**
+
+1. 在 resend 官网注册后，点击左侧 Domains 添加并验证你的域名，等待验证完成
+2. 点击左侧 Api Keys 创建立api key， 复制token回到项目网站设置页面添加 resend token
+
+3. 点击左侧 Webhooks 添加回调地址  `https://你的项目域名/api/webhooks` 
+
+   勾选✅ (email.bounced email.complained email.delivered email.delivery_delayed)
+
+**项目更新**
+
+更新后需要执行 `https://你的项目域名/api/init/你的jwt_secret` 来同步数据库结构
+
 ## 赞助
 
 
