@@ -166,7 +166,7 @@ const publicService = {
 
 		const uuid = uuidv4();
 
-		await c.env.kv.put(KvConst.PUBLIC_KEY, uuid, { expirationTtl: 60 * 60 * 24 * 7 });
+		await c.env.kv.put(KvConst.PUBLIC_KEY, uuid);
 
 		return {token: uuid}
 	},
