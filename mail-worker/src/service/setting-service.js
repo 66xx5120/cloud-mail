@@ -1,7 +1,7 @@
 import KvConst from '../const/kv-const';
 import setting from '../entity/setting';
 import orm from '../entity/orm';
-import { settingConst, verifyRecordType } from '../const/entity-const';
+import { verifyRecordType } from '../const/entity-const';
 import fileUtils from '../utils/file-utils';
 import r2Service from './r2-service';
 import emailService from './email-service';

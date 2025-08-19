@@ -683,7 +683,7 @@ function loadData() {
     }
 
     .email-sender {
-      font-weight: bold;
+      font-weight: bold;;
       color: #1a1a1a;
       display: grid;
       grid-template-columns: auto 1fr auto;

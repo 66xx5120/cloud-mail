@@ -17,6 +17,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="changeLang('zh')">简体中文</el-dropdown-item>
+            <el-dropdown-item @click="changeLang('zhTW')">繁體中文</el-dropdown-item>
             <el-dropdown-item @click="changeLang('en')">English</el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -87,6 +88,7 @@ import {useSettingStore} from "@/store/setting.js";
 import { hasPerm } from "@/perm/perm.js"
 import {useI18n} from "vue-i18n";
 import {copyText} from "@/utils/clipboard-utils.js";
+import { setExtend } from "@/utils/day.js"
 
 const { t } = useI18n();
 const route = useRoute();
@@ -167,6 +169,7 @@ async function copyEmail(email) {
 }
 
 function changeLang(lang) {
+  setExtend(lang === 'en' ? 'en' : 'zh-cn')
   settingStore.lang = lang
 }
 
@@ -203,6 +206,7 @@ function formatName(email) {
 .breadcrumb-item {
   font-weight: bold;
   font-size: 14px;
+  color: var(--el-text-color-primary);
   white-space: nowrap;
 }
 
@@ -323,7 +327,7 @@ function formatName(email) {
     .writer-text {
       margin-left: 15px;
       font-size: 14px;
-      font-weight: bold;
+      font-weight: bold;;
     }
   }
 }

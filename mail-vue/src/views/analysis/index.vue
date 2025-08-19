@@ -727,6 +727,10 @@ function createSendGauge() {
           gap: 5px;
           grid-auto-rows: min-content;
 
+          > div:first-child {
+            font-size: 15px;
+          }
+
           > div:last-child {
             font-size: 13px;
           }
@@ -761,18 +765,18 @@ function createSendGauge() {
         justify-content: start;
         gap: 20px;
         padding-top: 5px;
-
+        font-size: 14px;
         .normal {
           width: fit-content;
           color: var(--el-color-success);
-          font-weight: bold;
+          font-weight: bold;;
           margin-left: 3px;
         }
 
         .deleted {
           width: fit-content;
           color: var(--el-color-danger);
-          font-weight: bold;
+          font-weight: bold;;
           margin-left: 3px;
         }
       }

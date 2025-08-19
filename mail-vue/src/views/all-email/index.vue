@@ -211,7 +211,7 @@ function getEmailList(emailId, size) {
 
 .status-select {
   margin-bottom: 2px;
-  width: 100px;
+  width: 102px;
   :deep(.el-select__wrapper) {
     min-height: 28px;
   }

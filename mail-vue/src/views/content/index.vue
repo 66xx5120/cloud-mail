@@ -238,7 +238,7 @@ const handleDelete = () => {
 
   .email-title {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: bold;;
     margin-bottom: 10px;
   }
 
@@ -268,7 +268,7 @@ const handleDelete = () => {
         display: flex;
         justify-content: space-between;
         span:first-child {
-          font-weight: bold;
+          font-weight: bold;;
         }
       }
 
@@ -367,13 +367,13 @@ const handleDelete = () => {
 
       .send-source {
         white-space: nowrap;
-        font-weight: bold;
+        font-weight: bold;;
         padding-right: 10px;
       }
 
       .source {
         white-space: nowrap;
-        font-weight: bold;
+        font-weight: bold;;
         padding-right: 10px;
       }
     }

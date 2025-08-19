@@ -58,9 +58,9 @@
           <template #reference>
             <Icon class="warning" icon="fe:warning" width="18" height="18"/>
           </template>
-          <div style="font-weight: bold;margin-bottom: 2px;">{{t('emailInterception')}}</div>
+          <div style="font-weight: bold;;margin-bottom: 2px;">{{t('emailInterception')}}</div>
           <div>{{t('emailInterceptionDesc')}}</div>
-          <div style="font-weight: bold;margin-top: 10px;margin-bottom: 2px;">{{t('availableDomains')}}</div>
+          <div style="font-weight: bold;;margin-top: 10px;margin-bottom: 2px;">{{t('availableDomains')}}</div>
           <div>
             {{t('availableDomainsDesc')}}
           </div>

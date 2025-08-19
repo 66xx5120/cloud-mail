@@ -475,7 +475,7 @@ function close() {
 
       .sender-name {
         margin-left: 8px;
-        font-weight: bold;
+        font-weight: bold;;
       }
 
       .send-email {

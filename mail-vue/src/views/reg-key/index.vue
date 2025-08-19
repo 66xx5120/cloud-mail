@@ -194,21 +194,21 @@ function formatUserCreateTime(regKey) {
   const currentYear = dayjs().year();
   const expireYear = createTime.year();
 
-  if(settingStore.lang === 'zh') {
+  if(settingStore.lang === 'en') {
 
-    if (expireYear === currentYear) {
-      return createTime.format('M月D日 HH:mm');
-    } else {
-      return createTime.format('YYYY年M月D日 HH:mm');
-    }
+      if (expireYear === currentYear) {
+          return createTime.format('MMM D, HH:mm');
+      } else {
+          return createTime.format('MMM D, YYYY HH:mm');
+      }
 
   } else {
 
-    if (expireYear === currentYear) {
-      return createTime.format('MMM D, HH:mm');
-    } else {
-      return createTime.format('MMM D, YYYY HH:mm');
-    }
+      if (expireYear === currentYear) {
+          return createTime.format('M月D日 HH:mm');
+      } else {
+          return createTime.format('YYYY年M月D日 HH:mm');
+      }
 
   }
 
@@ -219,16 +219,18 @@ function formatExpireTime(expireTime) {
   const currentYear = dayjs().year();
   const expireYear = expireDate.year();
 
-  if (settingStore.lang === 'zh') {
+  if (settingStore.lang === 'en') {
 
-    return expireYear === currentYear
-        ? expireDate.format('M月D日')
-        : expireDate.format('YYYY年M月D日');
+      return expireYear === currentYear
+          ? expireDate.format('MMM D')
+          : expireDate.format('MMM D, YYYY');
+
   } else {
 
-    return expireYear === currentYear
-        ? expireDate.format('MMM D')
-        : expireDate.format('MMM D, YYYY');
+      return expireYear === currentYear
+          ? expireDate.format('M月D日')
+          : expireDate.format('YYYY年M月D日');
+
   }
 }
 
@@ -414,7 +416,7 @@ function openAdd() {
             display: flex;
             padding-top: 5px;
             .code {
-              font-weight: bold;
+              font-weight: bold;;
               font-size: 16px;
               white-space: nowrap;
               overflow: hidden;

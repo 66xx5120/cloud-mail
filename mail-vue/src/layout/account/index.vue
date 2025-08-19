@@ -499,7 +499,6 @@ path[fill="#ffdda1"] {
     .account {
       font-weight: 600;
       margin-bottom: 20px;
-      color: #333;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;

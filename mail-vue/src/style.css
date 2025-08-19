@@ -1,4 +1,3 @@
-
 * {
     margin: 0;
     padding: 0;
@@ -15,25 +14,19 @@ html, body {
     height: 100%;
 }
 
-@font-face {
-    font-family: 'HarmonyOS';
-    src: url('@/assets/fonts/HarmonyOS_Sans_SC_Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
 :deep(.el-input__inner:focus) {
     background-color: transparent !important;
     border-color: #dcdfe6 !important;
 }
 
+.el-table thead th {
+    font-weight: bold !important;
+}
+
 body {
-    font-family: 'HarmonyOS', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    'Noto Sans', sans-serif;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
     line-height: 1.5;
-    color: #333;
+    color: var(--el-text-color-primary);
     background-color: #fff;
     font-size: 14px;
 }
@@ -106,6 +99,7 @@ button, input, select, textarea {
 .message-bottom {
     top: auto !important;
     bottom: 20px !important;
+
     .el-icon {
         display: none !important;
     }

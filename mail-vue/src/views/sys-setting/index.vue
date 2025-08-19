@@ -1344,7 +1344,7 @@ function editSetting(settingForm, refreshStatus = true) {
       top: 1px;
       position: relative;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: bold;;
     }
   }
 }
@@ -1448,10 +1448,9 @@ function editSetting(settingForm, refreshStatus = true) {
 .concerning-item {
   display: flex;
   align-items: center;
-
   :deep(.el-button) {
     padding: 0 10px;
-
+    font-weight: normal;
     i {
       font-size: 22px;
     }
