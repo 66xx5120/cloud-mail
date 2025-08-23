@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,32 +7,16 @@
   <link rel="icon" href="./src/assets/favicon.svg" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script>
+    const uiStoreStr =  localStorage.getItem('ui')
+    if (uiStoreStr) {
+      const uiStore =  JSON.parse(uiStoreStr)
+      const root = document.documentElement
+      root.style.background = uiStore.dark ? '#141414' : '#FFFFFF'
+      root.setAttribute('class', uiStore.dark ? 'dark' : '');
+    }
+  </script>
 </head>
-<body>
-<div id="loading-first">
-  <div class="loading-icon">
-    <svg class="circular" viewBox="0 0 20 20">
-      <g class="loading-path">
-        <circle r="3.375" class="dot1" rx="0" ry="0"/>
-        <circle r="3.375" class="dot2" rx="0" ry="0"/>
-        <circle r="3.375" class="dot4" rx="0" ry="0"/>
-        <circle r="3.375" class="dot3" rx="0" ry="0"/>
-      </g>
-    </svg>
-  </div>
-</div>
-<div id="app"></div>
-<script>
-  const uiStoreStr =  localStorage.getItem('ui')
-  if (uiStoreStr) {
-    const uiStore =  JSON.parse(uiStoreStr)
-    const doc = document.querySelector('#loading-first')
-    doc.style.background = uiStore.dark ? '#141414' : '#FFFFFF'
-  }
-</script>
-<script type="module" src="/src/main.js"></script>
-</body>
-</html>
 <style>
 
   #loading-first {
@@ -45,6 +29,7 @@
     justify-content: center;
     align-items: center;
     z-index: 500;
+    background: var(--el-bg-color);
   }
 
   .loading-icon {
@@ -103,3 +88,20 @@
     }
   }
 </style>
+<body>
+<div id="loading-first">
+  <div class="loading-icon">
+    <svg class="circular" viewBox="0 0 20 20">
+      <g class="loading-path">
+        <circle r="3.375" class="dot1" rx="0" ry="0"/>
+        <circle r="3.375" class="dot2" rx="0" ry="0"/>
+        <circle r="3.375" class="dot4" rx="0" ry="0"/>
+        <circle r="3.375" class="dot3" rx="0" ry="0"/>
+      </g>
+    </svg>
+  </div>
+</div>
+<div id="app"></div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

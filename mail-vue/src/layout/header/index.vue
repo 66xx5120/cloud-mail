@@ -353,7 +353,7 @@ function formatName(email) {
   display: grid;
   height: 100%;
   gap: 10px;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: auto auto 1fr;
 }
 
 .header.not-send {
