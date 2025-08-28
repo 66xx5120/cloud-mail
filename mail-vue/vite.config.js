@@ -29,7 +29,7 @@ export default defineConfig(({mode}) => {
     },
     build: {
       target: 'es2022',
-      outDir: '../mail-worker/dist',
+      outDir: env.VITE_OUT_DIR || 'dist',
       emptyOutDir: true,
       assetsInclude: ['**/*.json']
     }
