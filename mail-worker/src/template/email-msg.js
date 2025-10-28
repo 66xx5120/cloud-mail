@@ -26,11 +26,14 @@ export default function emailMsgTemplate(email, tgMsgTo, tgMsgFrom, tgMsgText) {
 收件人：\u200B${email.toEmail}`
 	}
 
+	const text = (email.text || emailUtils.htmlToText(email.content))
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;');
 
 	if(tgMsgText === 'show') {
 		template += `
 
-${email.text || emailUtils.htmlToText(email.content)}`
+${text}`
 	}
 
 	return template;

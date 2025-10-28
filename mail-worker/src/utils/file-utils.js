@@ -1,7 +1,11 @@
 const fileUtils = {
 	getExtFileName(filename) {
-		const index = filename.lastIndexOf('.');
-		return index !== -1 ? filename.slice(index) : '';
+		try {
+			const index = filename.lastIndexOf('.');
+			return index !== -1 ? filename.slice(index) : '';
+		} catch (e) {
+			return ''
+		}
 	},
 
 	async getBuffHash(buff) {
