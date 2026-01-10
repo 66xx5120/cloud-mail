@@ -1306,7 +1306,7 @@ function editSetting(settingForm, refreshStatus = true) {
       plain: true
     })
     if (setting.value.manyEmail === 1) {
-      accountStore.currentAccountId = userStore.user.accountId;
+      accountStore.currentAccountId = userStore.user.account.accountId;
     }
     if (refreshStatus) {
       getSettings()
