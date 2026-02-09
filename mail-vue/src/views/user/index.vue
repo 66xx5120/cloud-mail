@@ -761,6 +761,7 @@ function formatSendType(user) {
   if (user.sendAction.sendType === 'day') return t('daily')
   if (user.sendAction.sendType === 'count') return t('total')
   if (user.sendAction.sendType === 'ban') return t('sendBanned')
+  if (user.sendAction.sendType === 'internal') return t('sendInternal')
 }
 
 function formatSendCount(user) {
@@ -1271,6 +1272,13 @@ function adjustWidth() {
 
 :deep(.account .cell) {
   white-space: nowrap;
+}
+
+:deep(.el-table) {
+  @media (pointer: coarse) {
+    /* 触屏 */
+    user-select: none;
+  }
 }
 
 :deep(.el-table th.el-table__cell>.cell.highlight) {
