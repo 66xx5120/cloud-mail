@@ -49,6 +49,7 @@ const settingService = {
 
 
 		let linuxdoSwitch = c.env.linuxdo_switch;
+		let projectLink = c.env.project_link;
 
 		if (typeof linuxdoSwitch === 'string' && linuxdoSwitch === 'true') {
 			linuxdoSwitch = true
@@ -57,6 +58,18 @@ const settingService = {
 		} else {
 			linuxdoSwitch = false
 		}
+
+		console.log(projectLink)
+
+		if (typeof projectLink === 'string' && projectLink === 'false') {
+			projectLink = false
+		} else if (projectLink === false) {
+			projectLink = false
+		} else {
+			projectLink = true
+		}
+
+		setting.projectLink = projectLink;
 
 		setting.linuxdoClientId = c.env.linuxdo_client_id;
 		setting.linuxdoCallbackUrl = c.env.linuxdo_callback_url;
@@ -204,7 +217,8 @@ const settingService = {
 			linuxdoClientId: settingRow.linuxdoClientId,
 			linuxdoCallbackUrl: settingRow.linuxdoCallbackUrl,
 			linuxdoSwitch: settingRow.linuxdoSwitch,
-			minEmailPrefix: settingRow.minEmailPrefix
+			minEmailPrefix: settingRow.minEmailPrefix,
+			projectLink: settingRow.projectLink
 		};
 	}
 };
